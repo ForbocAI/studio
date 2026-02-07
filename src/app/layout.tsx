@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Inter, Cinzel, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 
@@ -29,6 +30,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark" style={{ colorScheme: "dark" }}>
+      <Script src="https://www.googletagmanager.com/gtag/js?id=G-3VXNF0K2D1" strategy="afterInteractive" />
+      <Script id="google-analytics" strategy="afterInteractive">
+        {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', 'G-3VXNF0K2D1');`}
+      </Script>
       <body
         className={`${inter.variable} ${cinzel.variable} ${jetbrainsMono.variable} antialiased font-sans bg-background text-foreground`}
       >
