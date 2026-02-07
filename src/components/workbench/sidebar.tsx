@@ -1,9 +1,9 @@
 "use client";
 
 import * as React from "react";
+import Image from "next/image";
 import {
     Book,
-    Bot,
     Code2,
     History,
     LayoutDashboard,
@@ -91,9 +91,7 @@ export function WorkbenchSidebar({ ...props }: React.ComponentProps<typeof Sideb
         <Sidebar variant="inset" {...props} className="border-r border-border/50 bg-sidebar/50 backdrop-blur-md">
             <SidebarHeader className="h-16 border-b border-border/50 flex items-center px-6">
                 <div className="flex items-center gap-3">
-                    <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gold text-background shadow-lg shadow-gold/20">
-                        <Bot className="size-5" />
-                    </div>
+                    <Image src="/logo.png" alt="Forboc AI" width={32} height={32} className="rounded-lg object-contain" />
                     <div className="flex flex-col">
                         <span className="font-serif text-lg font-bold tracking-tight text-gold">FORBOC</span>
                         <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground -mt-1">Studio</span>
