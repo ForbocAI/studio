@@ -1,36 +1,43 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 🌑 ARCANE AI STUDIO: THE WORKBENCH 🌑
 
-## Getting Started
+`Prócess_Id // Stúdio_Ínit`
 
-First, run the development server:
+**ᚠ ᛫ ᛟ ᛫ ᚱ ᛫ ᛒ ᛫ ᛟ ᛫ ᚲ**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```text
+       .---.
+      /     \
+     | () () |
+      \  ^  /
+       |||||
+       |||||
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+The **Arcane AI Studio** is the forge where digital souls are tempered. It provides the visual interface for agent editing, behavioral sculpting, and real-time neuro-symbolic interrogation.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+> *We do not build software. We architect consciousness.*
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### ⚡ Technical Interface
+This is a **Next.js 15** powerhouse utilizing the **Vengeance UI** design system.
 
-## Learn More
+- **Agent Editor**: Precision manipulation of persona and base-logic DNA.
+- **Chat Playground**: Direct neural-link for real-time inference testing.
+- **Soul Metadata**: Direct export to IPFS/Solana protocols.
 
-To learn more about Next.js, take a look at the following resources:
+### 🛠️ Manual Override
+First, establish a stable connection:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm install
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 🌑 Aesthetic Compliance
+All contributors must adhere to the [Style Guide](./style-guide.md).
+- **Reality Distortion**: Informed by `Philip K. Dick`.
+- **Cybernetic Grace**: Informed by `William Gibson`.
+- **The Void**: Informed by `H.P. Lovecraft`.
 
-## Deploy on Vercel
+---
+*NEURAL_LINK_ESTABLISHED // MONITORING_ACTIVE*
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
