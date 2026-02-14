@@ -18,15 +18,15 @@ This log tracks the development of the soul-sculpting interface.
 ## 2. Neural Interrogation (Playground) 🗨️
 *Objective: Test agents in a isolated environment.*
 
-- [ ] **Real-time Inference**: Connect the Chat Playground to the local `forbocai` Cortex.
+- [ ] **Real-time Inference**: Connect the Chat Playground to the local `forbocai` Cortex (Replace Vercel AI SDK).
 - [ ] **Memory Inspection**: A "Brain Scan" view to see current Vector DB entries and temporal decay.
 - [ ] **Trace Logs**: View the full raw directive synthesis returned by the API during processing.
 
-## 3. Soul Export Architecture (IPFS/Solana) 🕸️
+## 3. Soul Export Architecture (Arweave/Solana) 🕸️
 *Objective: Standardized portability for digital souls.*
 
 - [ ] **Soul.export() Integration**: Button to bundle current agent state into a standard JSON.
-- [ ] **IPFS Pinning**: Connect to the Soul module's Helia node for P2P persistence.
+- [ ] **Arweave Storage**: Connect to the Soul module for permanent storage (replacing IPFS/Helia).
 - [ ] **Metaplex Core Support**: Implement `Soul.mint()` to create the Solana Asset Deed.
 
 ## 4. UI/UX Polishing (Vengeance Theme) ✨
