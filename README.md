@@ -41,3 +41,6 @@ All contributors must adhere to the [Style Guide](./style-guide.md).
 ---
 *NEURAL_LINK_ESTABLISHED // MONITORING_ACTIVE*
 
+---
+## License
+All rights reserved. © 2026 ForbocAI. See [LICENSE](./LICENSE) for full details.
