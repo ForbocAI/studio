@@ -22,7 +22,7 @@ This is a **Next.js 15** powerhouse utilizing the **Vengeance UI** design system
 
 - **Agent Editor**: Precision manipulation of persona and base-logic DNA.
 - **Chat Playground**: Direct neural-link for real-time inference testing.
-- **Soul Metadata**: Direct export to IPFS/Solana protocols.
+- **Soul Metadata**: Direct export to Arweave/Solana protocols (ANS-104 data items).
 
 ### 🛠️ Manual Override
 First, establish a stable connection:

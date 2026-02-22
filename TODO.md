@@ -26,7 +26,7 @@ This log tracks the development of the soul-sculpting interface.
 *Objective: Standardized portability for digital souls.*
 
 - [ ] **Soul.export() Integration**: Button to bundle current agent state into a standard JSON.
-- [ ] **Arweave Storage**: Connect to the Soul module for permanent storage (replacing IPFS/Helia).
+- [ ] **Arweave Storage**: Connect to the Soul module for permanent storage (ANS-104 data items).
 - [ ] **Metaplex Core Support**: Implement `Soul.mint()` to create the Solana Asset Deed.
 
 ## 4. UI/UX Polishing (Vengeance Theme) ✨
