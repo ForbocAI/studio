@@ -75,6 +75,8 @@ const jsonLd = {
   ]
 };
 
+import { ReduxProvider } from "@/components/providers/redux-provider";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -99,7 +101,9 @@ gtag('config', 'G-3VXNF0K2D1');`}
       <body
         className={`${inter.variable} ${cinzel.variable} ${jetbrainsMono.variable} antialiased font-sans bg-background text-foreground`}
       >
-        {children}
+        <ReduxProvider>
+          {children}
+        </ReduxProvider>
       </body>
     </html>
   );

@@ -86,14 +86,14 @@ const data = {
     ],
 };
 
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setActiveView } from "@/store/slices/uiSlice";
+
 export function WorkbenchSidebar({
-    activeView,
-    setActiveView,
     ...props
-}: {
-    activeView: string;
-    setActiveView: (view: any) => void
-} & React.ComponentProps<typeof Sidebar>) {
+}: React.ComponentProps<typeof Sidebar>) {
+    const dispatch = useAppDispatch();
+    const activeView = useAppSelector((state) => state.ui.activeView);
     return (
         <Sidebar variant="inset" {...props} className="border-r border-border/50 bg-sidebar/50 backdrop-blur-md">
             <SidebarHeader className="h-16 border-b border-border/50 flex items-center px-6">
@@ -112,7 +112,7 @@ export function WorkbenchSidebar({
                         <SidebarMenuItem>
                             <SidebarMenuButton
                                 isActive={activeView === 'architect'}
-                                onClick={() => setActiveView('architect')}
+                                onClick={() => dispatch(setActiveView('architect'))}
                                 tooltip="Agent Architect"
                             >
                                 <LayoutDashboard className="text-gold/70" />
@@ -122,7 +122,7 @@ export function WorkbenchSidebar({
                         <SidebarMenuItem>
                             <SidebarMenuButton
                                 isActive={activeView === 'brain'}
-                                onClick={() => setActiveView('brain')}
+                                onClick={() => dispatch(setActiveView('brain'))}
                                 tooltip="Lore Weaver (Brain)"
                             >
                                 <Library className="text-gold/70" />
@@ -132,7 +132,7 @@ export function WorkbenchSidebar({
                         <SidebarMenuItem>
                             <SidebarMenuButton
                                 isActive={activeView === 'trace'}
-                                onClick={() => setActiveView('trace')}
+                                onClick={() => dispatch(setActiveView('trace'))}
                                 tooltip="Trace Logs"
                             >
                                 <Code2 className="text-gold/70" />

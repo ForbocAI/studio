@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "framer-motion";
 import { Code2, Terminal, Cpu, Activity } from "lucide-react";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
@@ -12,11 +11,7 @@ export function TraceLogs() {
     ];
 
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex-1 flex flex-col overflow-hidden bg-black/20"
-        >
+        <div className="flex-1 flex flex-col overflow-hidden bg-black/20 animate-in fade-in duration-500">
             <header className="p-8 border-b border-border/50 bg-background/50 backdrop-blur-md">
                 <div className="flex items-center justify-between">
                     <div className="space-y-1">
@@ -54,6 +49,6 @@ export function TraceLogs() {
                     ))}
                 </div>
             </ScrollArea>
-        </motion.div>
+        </div>
     );
 }

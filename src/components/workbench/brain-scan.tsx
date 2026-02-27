@@ -1,5 +1,4 @@
 "use client";
-import { motion } from "framer-motion";
 import { Brain, Database, Search, Filter } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
@@ -13,11 +12,7 @@ export function BrainScan() {
     ];
 
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="flex-1 flex flex-col overflow-hidden"
-        >
+        <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in duration-500">
             <header className="p-8 border-b border-border/50">
                 <div className="flex items-center justify-between mb-6">
                     <div className="space-y-1">
@@ -64,7 +59,7 @@ export function BrainScan() {
                     ))}
                 </div>
             </ScrollArea>
-        </motion.div>
+        </div>
     );
 }
 

@@ -1,6 +1,5 @@
 "use client";
 
-import { motion } from "framer-motion";
 import { Bot, Sparkles, Zap, Shield, Wand2, Book } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,17 +8,15 @@ import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
-import { useAgentStore } from "@/lib/store";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { setName, setArchetype, setDirective, addAction, selectAgent, exportSoul } from "@/store/slices/agentSlice";
 
 export function AgentEditor() {
-    const { name, setName, archetype, setArchetype, directive, setDirective, actions, addAction } = useAgentStore();
+    const dispatch = useAppDispatch();
+    const { name, archetype, directive, actions } = useAppSelector(selectAgent);
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex-1 overflow-auto p-8 lg:p-12 space-y-12 max-w-5xl mx-auto"
-        >
+        <div className="flex-1 overflow-auto p-8 lg:p-12 space-y-12 max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-500">
             <header className="flex items-center justify-between">
                 <div className="space-y-1">
                     <h1 className="text-4xl font-serif font-bold text-gold gold-glow">Agent Architect</h1>
@@ -30,7 +27,7 @@ export function AgentEditor() {
                         variant="outline"
                         size="sm"
                         className="border-gold/30 text-gold hover:bg-gold/10"
-                        onClick={() => alert("Exporting Soul to Arweave...")}
+                        onClick={() => dispatch(exportSoul())}
                     >
                         <Zap className="size-3 mr-2" /> Export Soul
                     </Button>
@@ -54,7 +51,7 @@ export function AgentEditor() {
                                 <label className="text-[10px] uppercase font-bold tracking-tighter text-muted-foreground">Entity Name</label>
                                 <Input
                                     value={name}
-                                    onChange={(e) => setName(e.target.value)}
+                                    onChange={(e) => dispatch(setName(e.target.value))}
                                     placeholder="e.g. Malakor the Wise"
                                     className="bg-black/40 border-border/50 focus:border-gold/50 transition-all font-serif text-lg"
                                 />
@@ -63,7 +60,7 @@ export function AgentEditor() {
                                 <label className="text-[10px] uppercase font-bold tracking-tighter text-muted-foreground">Archetype (Class)</label>
                                 <select
                                     value={archetype}
-                                    onChange={(e) => setArchetype(e.target.value)}
+                                    onChange={(e) => dispatch(setArchetype(e.target.value))}
                                     className="flex h-10 w-full rounded-md border border-border/50 bg-black/40 px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 transition-all"
                                 >
                                     <option>Scholar</option>
@@ -78,7 +75,7 @@ export function AgentEditor() {
                             <label className="text-[10px] uppercase font-bold tracking-tighter text-muted-foreground">Prime Directive (System Prompt)</label>
                             <Textarea
                                 value={directive}
-                                onChange={(e) => setDirective(e.target.value)}
+                                onChange={(e) => dispatch(setDirective(e.target.value))}
                                 placeholder="Define the agent's fundamental nature and mission..."
                                 className="min-h-[200px] bg-black/40 border-border/50 focus:border-gold/50 font-mono text-sm leading-relaxed resize-none"
                             />
@@ -125,8 +122,8 @@ export function AgentEditor() {
                     Action Grimoire
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {actions.map((action) => (
-                        <div key={action.id} className="p-4 rounded-xl border border-dashed border-border/100 bg-black/40 flex items-center justify-between hover:border-gold/40 transition-all cursor-pointer group">
+                    {actions.map((action: { id: string; name: string }) => (
+                        <div key={action.id} className="p-4 rounded-xl border border-dashed border-border bg-black/40 flex items-center justify-between hover:border-gold/40 transition-all cursor-pointer group">
                             <code className="text-xs text-muted-foreground group-hover:text-gold transition-colors">{action.name}</code>
                             <code className="text-[10px] bg-white/5 px-2 py-1 rounded">f(x)</code>
                         </div>
@@ -134,9 +131,9 @@ export function AgentEditor() {
                     <div
                         onClick={() => {
                             const n = prompt("Enter action name:");
-                            if (n) addAction(n);
+                            if (n) dispatch(addAction(n));
                         }}
-                        className="p-4 rounded-xl border border-dashed border-border/100 bg-black/5 flex items-center justify-center hover:bg-gold/5 hover:border-gold/40 transition-all cursor-pointer"
+                        className="p-4 rounded-xl border border-dashed border-border bg-black/5 flex items-center justify-center hover:bg-gold/5 hover:border-gold/40 transition-all cursor-pointer"
                     >
                         <span className="text-xs text-muted-foreground flex items-center gap-2">
                             <Sparkles className="size-3" />
@@ -145,6 +142,6 @@ export function AgentEditor() {
                     </div>
                 </div>
             </section>
-        </motion.div>
+        </div>
     );
 }

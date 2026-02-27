@@ -1,6 +1,7 @@
-import { useState } from 'react';
-import { runAgentProtocol, AgentResponse } from '@/lib/sdk-adapter';
-import { useAgentStore } from '@/lib/store';
+import { useAppDispatch, useAppSelector } from './../store/hooks';
+import { setAgentChatInput, addAgentMessage, setAgentChatError, selectAgentChat } from '../store/slices/formSlice';
+import { selectAgentDirective } from '../store/slices/agentSlice';
+import { useRunProtocolMutation } from '../store/api/agentApi';
 
 export interface Message {
     id: string;
@@ -9,41 +10,47 @@ export interface Message {
 }
 
 export function useAgent() {
-    const [messages, setMessages] = useState<Message[]>([]);
-    const [input, setInput] = useState('');
-    const [isLoading, setIsLoading] = useState(false);
-    const { directive } = useAgentStore();
+    const dispatch = useAppDispatch();
+
+    // Select state from Redux
+    const { input, messages } = useAppSelector(selectAgentChat);
+    const directive = useAppSelector(selectAgentDirective);
+
+    // RTK Query mutation
+    const [runProtocol, { isLoading }] = useRunProtocolMutation();
 
     const handleSubmit = async (e?: React.FormEvent) => {
         if (e) e.preventDefault();
         if (!input.trim()) return;
 
         const userMsg: Message = { id: Date.now().toString(), role: 'user', content: input };
-        setMessages(prev => [...prev, userMsg]);
-        setInput('');
-        setIsLoading(true);
+        dispatch(addAgentMessage(userMsg));
+        dispatch(setAgentChatInput(''));
+        dispatch(setAgentChatError(null));
 
         try {
-            const response = await runAgentProtocol('studio-agent', input, directive);
+            const response = await runProtocol({
+                agentId: 'studio-agent',
+                observation: input,
+                persona: directive
+            }).unwrap();
+
             const assistantMsg: Message = {
                 id: (Date.now() + 1).toString(),
                 role: 'assistant',
                 content: response.text
             };
-            setMessages(prev => [...prev, assistantMsg]);
-        } catch (error) {
-            console.error("Agent Protocol Error:", error);
-        } finally {
-            setIsLoading(false);
+            dispatch(addAgentMessage(assistantMsg));
+        } catch (error: any) {
+            dispatch(setAgentChatError(error.error || "Agent protocol failed"));
         }
     };
 
     return {
         messages,
         input,
-        handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value),
+        handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => dispatch(setAgentChatInput(e.target.value)),
         handleSubmit,
-        setMessages,
         isLoading
     };
 }
