@@ -86,7 +86,14 @@ const data = {
     ],
 };
 
-export function WorkbenchSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function WorkbenchSidebar({
+    activeView,
+    setActiveView,
+    ...props
+}: {
+    activeView: string;
+    setActiveView: (view: any) => void
+} & React.ComponentProps<typeof Sidebar>) {
     return (
         <Sidebar variant="inset" {...props} className="border-r border-border/50 bg-sidebar/50 backdrop-blur-md">
             <SidebarHeader className="h-16 border-b border-border/50 flex items-center px-6">
@@ -102,27 +109,36 @@ export function WorkbenchSidebar({ ...props }: React.ComponentProps<typeof Sideb
                 <SidebarGroup>
                     <SidebarGroupLabel className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50">Core Modules</SidebarGroupLabel>
                     <SidebarMenu>
-                        {data.navMain.map((item) => (
-                            <SidebarMenuItem key={item.title}>
-                                <SidebarMenuButton tooltip={item.title} className="hover:bg-accent/50 transition-colors">
-                                    {item.icon && <item.icon className="text-gold/70" />}
-                                    <span className="font-medium">{item.title}</span>
-                                </SidebarMenuButton>
-                                {item.items?.length ? (
-                                    <SidebarMenuSub>
-                                        {item.items.map((subItem) => (
-                                            <SidebarMenuSubItem key={subItem.title}>
-                                                <SidebarMenuSubButton asChild>
-                                                    <a href={subItem.url} className="text-sm text-muted-foreground hover:text-foreground transition-colors">
-                                                        <span>{subItem.title}</span>
-                                                    </a>
-                                                </SidebarMenuSubButton>
-                                            </SidebarMenuSubItem>
-                                        ))}
-                                    </SidebarMenuSub>
-                                ) : null}
-                            </SidebarMenuItem>
-                        ))}
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                isActive={activeView === 'architect'}
+                                onClick={() => setActiveView('architect')}
+                                tooltip="Agent Architect"
+                            >
+                                <LayoutDashboard className="text-gold/70" />
+                                <span className="font-medium">Agent Architect</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                isActive={activeView === 'brain'}
+                                onClick={() => setActiveView('brain')}
+                                tooltip="Lore Weaver (Brain)"
+                            >
+                                <Library className="text-gold/70" />
+                                <span className="font-medium">Lore Weaver</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
+                        <SidebarMenuItem>
+                            <SidebarMenuButton
+                                isActive={activeView === 'trace'}
+                                onClick={() => setActiveView('trace')}
+                                tooltip="Trace Logs"
+                            >
+                                <Code2 className="text-gold/70" />
+                                <span className="font-medium">Trace Logs</span>
+                            </SidebarMenuButton>
+                        </SidebarMenuItem>
                     </SidebarMenu>
                 </SidebarGroup>
                 <SidebarGroup className="mt-auto">
@@ -144,7 +160,7 @@ export function WorkbenchSidebar({ ...props }: React.ComponentProps<typeof Sideb
             </SidebarContent>
             <SidebarFooter className="border-t border-border/50 p-4">
                 <div className="flex items-center gap-3 rounded-lg border border-border/50 bg-black/20 p-3 backdrop-blur-sm">
-                    <div className="size-8 rounded-full bg-gradient-to-br from-gold to-arcane-purple opacity-80" />
+                    <div className="size-8 rounded-full bg-linear-to-br from-gold to-arcane-purple opacity-80" />
                     <div className="flex flex-col">
                         <p className="text-xs font-medium">Grandmaster</p>
                         <p className="text-[10px] text-muted-foreground">Admin Access</p>

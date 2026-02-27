@@ -1,15 +1,15 @@
 "use client";
 
-import { useChat, type UIMessage as Message } from "@ai-sdk/react";
+import { useAgent } from "@/hooks/use-agent";
 import { motion, AnimatePresence } from "framer-motion";
-import { Send, Bot, User, Trash2, Maximize2, Minimize2 } from "lucide-react";
+import { Send, Bot, User, Trash2, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Badge } from "@/components/ui/badge";
 
 export function Playground() {
-    const { messages, input, handleInputChange, handleSubmit, setMessages } = useChat() as any;
+    const { messages, input, handleInputChange, handleSubmit, setMessages, isLoading } = useAgent();
 
     return (
         <div className="flex flex-col h-full bg-sidebar/30 backdrop-blur-xl border-l border-border/50 w-full max-w-md">
@@ -60,6 +60,23 @@ export function Playground() {
                                 </div>
                             </motion.div>
                         ))}
+                        {isLoading && (
+                            <motion.div
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="flex gap-3"
+                            >
+                                <div className="size-8 rounded-lg bg-gold/10 border border-gold/20 flex items-center justify-center shrink-0">
+                                    <Loader2 className="size-4 text-gold animate-spin" />
+                                </div>
+                                <div className="flex flex-col space-y-1">
+                                    <span className="text-[10px] font-mono text-muted-foreground uppercase">Thinking</span>
+                                    <div className="p-3 rounded-2xl text-sm leading-relaxed bg-black/40 text-muted-foreground/50 rounded-tl-none border border-border/50 animate-pulse">
+                                        Processing multi-round protocol...
+                                    </div>
+                                </div>
+                            </motion.div>
+                        )}
                     </AnimatePresence>
                 </div>
             </ScrollArea>
