@@ -131,7 +131,7 @@ export function AgentEditor() {
                     <div
                         onClick={() => {
                             const n = prompt("Enter action name:");
-                            if (n) dispatch(addAction(n));
+                            n && dispatch(addAction(n));
                         }}
                         className="p-4 rounded-xl border border-dashed border-border bg-black/5 flex items-center justify-center hover:bg-gold/5 hover:border-gold/40 transition-all cursor-pointer"
                     >

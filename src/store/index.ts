@@ -37,11 +37,9 @@ export const store = configureStore({
             .concat(baseApi.middleware)
             .prepend(responsiveListener.middleware, errorListener.middleware);
 
-        if (process.env.NODE_ENV === 'development') {
-            return middleware.concat(logger as Middleware);
-        }
-
-        return middleware;
+        return process.env.NODE_ENV === 'development'
+            ? middleware.concat(logger as Middleware)
+            : middleware;
     },
 });
 

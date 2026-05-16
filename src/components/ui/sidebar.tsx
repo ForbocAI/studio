@@ -55,11 +55,7 @@ const SidebarContext = React.createContext<SidebarContextProps | null>(null)
 
 function useSidebar() {
   const context = React.useContext(SidebarContext)
-  if (!context) {
-    throw new Error("useSidebar must be used within a SidebarProvider.")
-  }
-
-  return context
+  return context || (() => { throw new Error("useSidebar must be used within a SidebarProvider.") })()
 }
 
 function SidebarProvider({
@@ -84,11 +80,7 @@ function SidebarProvider({
 
   const setOpen = (value: boolean | ((value: boolean) => boolean)) => {
     const openState = typeof value === "function" ? value(open) : value
-    if (setOpenProp) {
-      setOpenProp(openState)
-    } else {
-      dispatch(setSidebarOpen(openState))
-    }
+    setOpenProp ? setOpenProp(openState) : dispatch(setSidebarOpen(openState))
 
     document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
   }
@@ -154,8 +146,7 @@ function Sidebar({
 }) {
   const { isMobile, state, openMobile, setOpenMobile } = useSidebar()
 
-  if (collapsible === "none") {
-    return (
+  return collapsible === "none" ? (
       <div
         data-slot="sidebar"
         className={cn(
@@ -166,11 +157,7 @@ function Sidebar({
       >
         {children}
       </div>
-    )
-  }
-
-  if (isMobile) {
-    return (
+  ) : isMobile ? (
       <Sheet open={openMobile} onOpenChange={setOpenMobile} {...props}>
         <SheetContent
           data-sidebar="sidebar"
@@ -191,10 +178,7 @@ function Sidebar({
           <div className="flex h-full w-full flex-col">{children}</div>
         </SheetContent>
       </Sheet>
-    )
-  }
-
-  return (
+  ) : (
     <div
       className="group peer text-sidebar-foreground hidden md:block"
       data-state={state}
@@ -511,24 +495,16 @@ function SidebarMenuButton({
     />
   )
 
-  if (!tooltip) {
-    return button
-  }
+  const normalizedTooltip = typeof tooltip === "string" ? { children: tooltip } : tooltip
 
-  if (typeof tooltip === "string") {
-    tooltip = {
-      children: tooltip,
-    }
-  }
-
-  return (
+  return !normalizedTooltip ? button : (
     <Tooltip>
       <TooltipTrigger asChild>{button}</TooltipTrigger>
       <TooltipContent
         side="right"
         align="center"
         hidden={state !== "collapsed" || isMobile}
-        {...tooltip}
+        {...normalizedTooltip}
       />
     </Tooltip>
   )

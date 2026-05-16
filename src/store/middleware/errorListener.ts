@@ -6,8 +6,6 @@ export const errorListener = createListenerMiddleware();
 errorListener.startListening({
     actionCreator: setAgentChatError,
     effect: (action) => {
-        if (action.payload) {
-            console.error("Agent Protocol Error:", action.payload);
-        }
+        action.payload && console.error("Agent Protocol Error:", action.payload);
     },
 });

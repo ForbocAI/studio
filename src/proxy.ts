@@ -5,12 +5,9 @@ export async function middleware(request: NextRequest) {
     const session = await getSession(request);
 
     // All routes in Studio are protected
-    if (!session) {
-        const loginUrl = new URL("https://account.forboc.ai");
-        return NextResponse.redirect(loginUrl);
-    }
-
-    return NextResponse.next();
+    return session
+        ? NextResponse.next()
+        : NextResponse.redirect(new URL("https://account.forboc.ai"));
 }
 
 export const config = {

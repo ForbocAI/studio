@@ -20,30 +20,31 @@ export function useAgent() {
     const [runProtocol, { isLoading }] = useRunProtocolMutation();
 
     const handleSubmit = async (e?: React.FormEvent) => {
-        if (e) e.preventDefault();
-        if (!input.trim()) return;
+        e?.preventDefault();
+        
+        return input.trim() ? (() => {
+            const userMsg: Message = { id: Date.now().toString(), role: 'user', content: input };
+            dispatch(addAgentMessage(userMsg));
+            dispatch(setAgentChatInput(''));
+            dispatch(setAgentChatError(null));
 
-        const userMsg: Message = { id: Date.now().toString(), role: 'user', content: input };
-        dispatch(addAgentMessage(userMsg));
-        dispatch(setAgentChatInput(''));
-        dispatch(setAgentChatError(null));
-
-        try {
-            const response = await runProtocol({
+            return runProtocol({
                 agentId: 'studio-agent',
                 observation: input,
                 persona: directive
-            }).unwrap();
-
-            const assistantMsg: Message = {
-                id: (Date.now() + 1).toString(),
-                role: 'assistant',
-                content: response.text
-            };
-            dispatch(addAgentMessage(assistantMsg));
-        } catch (error: any) {
-            dispatch(setAgentChatError(error.error || "Agent protocol failed"));
-        }
+            }).unwrap()
+            .then(response => {
+                const assistantMsg: Message = {
+                    id: (Date.now() + 1).toString(),
+                    role: 'assistant',
+                    content: response.text
+                };
+                dispatch(addAgentMessage(assistantMsg));
+            })
+            .catch((error: any) => {
+                dispatch(setAgentChatError(error.error || "Agent protocol failed"));
+            });
+        })() : Promise.resolve();
     };
 
     return {

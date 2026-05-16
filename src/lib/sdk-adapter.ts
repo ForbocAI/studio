@@ -50,85 +50,75 @@ const buildHeaders = () => ({
 
 const parseResponseJson = async (res: Response) => {
     const payload = await res.json().catch(() => ({}));
-    if (!res.ok) {
-        const message =
-            payload?.error?.message ||
-            payload?.error ||
-            payload?.message ||
-            `API request failed (${res.status})`;
-        throw new Error(message);
-    }
-    return payload;
+    return res.ok
+        ? payload
+        : Promise.reject(new Error(
+              payload?.error?.message ||
+              payload?.error ||
+              payload?.message ||
+              `API request failed (${res.status})`
+          ));
 };
 
-export async function runAgentProtocol(
+const executeTurn = async (
+    agentId: string,
+    tape: NPCProcessTape,
+    lastResult: Record<string, unknown> | undefined,
+    persona: string,
+    observation: string,
+    turn: number
+): Promise<AgentResponse> => {
+    return turn >= MAX_PROTOCOL_TURNS
+        ? Promise.reject(new Error(`Protocol loop exceeded ${MAX_PROTOCOL_TURNS} turns`))
+        : fetch(`${API_BASE}/npcs/${agentId}/process`, {
+              method: "POST",
+              headers: buildHeaders(),
+              body: JSON.stringify({ tape, lastResult }),
+          })
+              .then(parseResponseJson)
+              .then((payload) => {
+                  const processPayload = payload as NPCProcessResponse;
+                  const newTape = processPayload.tape;
+                  const instruction = processPayload.instruction;
+
+                  const handlers: Record<string, () => Promise<AgentResponse>> = {
+                      IdentifyActor: () => executeTurn(agentId, newTape, {
+                          type: "IdentifyActorResult",
+                          actor: { npcId: agentId, persona, data: newTape.npcState || {} },
+                      }, persona, observation, turn + 1),
+                      QueryVector: () => executeTurn(agentId, newTape, {
+                          type: "QueryVectorResult",
+                          memories: [{ text: `Recalling: ${instruction.query || observation}`, type: "experience", importance: 0.5, similarity: 0.5 }],
+                      }, persona, observation, turn + 1),
+                      ExecuteInference: () => executeTurn(agentId, newTape, {
+                          type: "ExecuteInferenceResult",
+                          generatedOutput: `${persona}: ${(instruction.prompt || observation).slice(0, 240)}`,
+                      }, persona, observation, turn + 1),
+                      Finalize: () => Promise.resolve({
+                          text: instruction.dialogue || "",
+                          action: instruction.action,
+                          valid: Boolean(instruction.valid),
+                          signature: instruction.signature,
+                      }),
+                  };
+
+                  return handlers[instruction.type]
+                      ? handlers[instruction.type]()
+                      : Promise.reject(new Error(`Unknown protocol instruction: ${instruction.type}`));
+              });
+};
+
+export function runAgentProtocol(
     agentId: string,
     observation: string,
     persona: string
 ): Promise<AgentResponse> {
-    let tape: NPCProcessTape = {
+    const initialTape: NPCProcessTape = {
         observation,
         context: {},
         npcState: {},
         persona,
         memories: [],
     };
-    let lastResult: Record<string, unknown> | undefined = undefined;
-
-    for (let turn = 0; turn < MAX_PROTOCOL_TURNS; turn += 1) {
-        const processRes = await fetch(`${API_BASE}/npcs/${agentId}/process`, {
-            method: "POST",
-            headers: buildHeaders(),
-            body: JSON.stringify({ tape, lastResult }),
-        });
-        const processPayload = (await parseResponseJson(processRes)) as NPCProcessResponse;
-        tape = processPayload.tape;
-        const instruction = processPayload.instruction;
-
-        if (instruction.type === "IdentifyActor") {
-            lastResult = {
-                type: "IdentifyActorResult",
-                actor: {
-                    npcId: agentId,
-                    persona,
-                    data: tape.npcState || {},
-                },
-            };
-            continue;
-        }
-
-        if (instruction.type === "QueryVector") {
-            const query = instruction.query || observation;
-            const memories = [
-                {
-                    text: `Recalling: ${query}`,
-                    type: "experience",
-                    importance: 0.5,
-                    similarity: 0.5,
-                },
-            ];
-            lastResult = { type: "QueryVectorResult", memories };
-            continue;
-        }
-
-        if (instruction.type === "ExecuteInference") {
-            const prompt = instruction.prompt || observation;
-            const generatedOutput = `${persona}: ${prompt.slice(0, 240)}`;
-            lastResult = { type: "ExecuteInferenceResult", generatedOutput };
-            continue;
-        }
-
-        if (instruction.type === "Finalize") {
-            return {
-                text: instruction.dialogue || "",
-                action: instruction.action,
-                valid: Boolean(instruction.valid),
-                signature: instruction.signature,
-            };
-        }
-
-        throw new Error(`Unknown protocol instruction: ${instruction.type}`);
-    }
-
-    throw new Error(`Protocol loop exceeded ${MAX_PROTOCOL_TURNS} turns`);
+    return executeTurn(agentId, initialTape, undefined, persona, observation, 0);
 }
