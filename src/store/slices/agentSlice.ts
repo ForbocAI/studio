@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction, createSelector } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createSelector, nanoid } from '@reduxjs/toolkit';
 
 interface AgentAction {
     id: string;
@@ -36,11 +36,16 @@ export const agentSlice = createSlice({
         setDirective: (state, action: PayloadAction<string>) => {
             state.directive = action.payload;
         },
-        addAction: (state, action: PayloadAction<string>) => {
-            state.actions.push({
-                id: Math.random().toString(36).substr(2, 9),
-                name: action.payload,
-            });
+        addAction: {
+            reducer: (state, action: PayloadAction<AgentAction>) => {
+                state.actions.push(action.payload);
+            },
+            prepare: (name: string) => ({
+                payload: {
+                    id: nanoid(),
+                    name,
+                },
+            }),
         },
         removeAction: (state, action: PayloadAction<string>) => {
             state.actions = state.actions.filter((a) => a.id !== action.payload);
