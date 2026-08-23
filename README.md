@@ -1,60 +1,49 @@
-<!-- AESTHETIC_PROTOCOL_COMPLIANCE -->
+# ForbocAI Studio
 
-<!-- ᚠ ᚢ ᚦ ᚨ ᚱ ᚲ ᚷ ᚹ -->
+ForbocAI Studio is the visual workspace for composing, exercising, and
+inspecting game-defined NPCs against the ForbocAI NPC protocol.
 
-```text
-    [VOID::WATCHER]
+- Studio: <https://studio.forboc.ai>
+- Account and API keys: <https://account.forboc.ai>
+- SDK documentation: <https://docs.forboc.ai>
 
-```
+## NPC Workflow
 
-SYSTEM_OVERRIDE // NEURAL_LINK_ESTABLISHED // LOG_ERR_CRITICAL
+The Studio product contract unifies one workflow for:
 
+1. defining an NPC identity, structured persona, goals, traits, and permitted
+   action vocabulary
+2. exercising conversations with runtime observations and game-owned context
+3. inspecting recalled memory, protocol instructions, committed results,
+   rationales, validation, and timing evidence
+4. refining the definition while preserving the boundary between NPC behavior
+   and game rules
+5. exporting a portable Soul through the same SDK-owned persistence contract
+   used by a game runtime
 
+## Ownership Boundary
 
----
-# 🌑 ARCANE AI STUDIO: THE WORKBENCH 🌑
+The ForbocAI API owns inference, orchestration, decision policy, grounded
+rationale, diagnosis, and output validation. The SDK owns API transport plus the
+vector-memory and permanent Soul effects that must execute beside the client.
+Studio provides the authoring and inspection interface. A game remains the
+authority for world state, available actions, action execution, presentation,
+audio, animation, and save data.
 
-`Prócess_Id // Stúdio_Ínit`
+Studio sends authored context through ForbocAI interfaces; it does not replace
+the API with browser-owned NPC logic or teach Servitor a particular game.
 
-**ᚠ ᛫ ᛟ ᛫ ᚱ ᛫ ᛒ ᛫ ᛟ ᛫ ᚲ**
+## Credentials
 
-```text
-       .---.
-      /     \
-     | () () |
-      \  ^  /
-       |||||
-       |||||
-```
+Use an API key created at <https://account.forboc.ai>. Keep credentials at the
+runtime boundary and out of NPC definitions, exported Souls, logs, and source
+control.
 
-The **Arcane AI Studio** is the forge where digital souls are tempered. It provides the visual interface for agent editing, behavioral sculpting, and real-time neuro-symbolic interrogation.
+## Integration Guides
 
-> *We do not build software. We architect consciousness.*
+- TypeScript SDK: <https://docs.forboc.ai/npm/welcome>
+- Unreal Engine SDK: <https://docs.forboc.ai/ue/welcome>
 
-### ⚡ Technical Interface
-This is a **Next.js 15** powerhouse utilizing the **Vengeance UI** design system.
-
-- **Agent Editor**: Precision manipulation of persona and base-logic DNA.
-- **Chat Playground**: Direct neural-link for real-time inference testing.
-- **Soul Metadata**: Direct export to Arweave/Solana protocols (ANS-104 data items).
-
-### 🛠️ Manual Override
-First, establish a stable connection:
-
-```bash
-npm install
-npm run dev
-```
-
-### 🌑 Aesthetic Compliance
-All contributors must adhere to the [Style Guide](./style-guide.md).
-- **Reality Distortion**: Informed by `Philip K. Dick`.
-- **Cybernetic Grace**: Informed by `William Gibson`.
-- **The Void**: Informed by `H.P. Lovecraft`.
-
----
-*NEURAL_LINK_ESTABLISHED // MONITORING_ACTIVE*
-
----
 ## License
-All rights reserved. © 2026 ForbocAI. See [LICENSE](./LICENSE) for full details.
+
+All rights reserved. See [LICENSE](./LICENSE).
