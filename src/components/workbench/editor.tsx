@@ -1,7 +1,7 @@
 "use client";
 
-import { Bot, Sparkles, Zap, Shield, Wand2, Book } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Sparkles, Zap, Shield, Wand2, Book } from "lucide-react";
+import { fromNullable, match } from "@forbocai/core";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/card";
@@ -9,11 +9,16 @@ import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setName, setArchetype, setDirective, addAction, selectAgent, exportSoul } from "@/store/slices/agentSlice";
+import { setName, setArchetype, setDirective, addAction, selectAgent } from "@/store/slices/agentSlice";
 
 export function AgentEditor() {
     const dispatch = useAppDispatch();
     const { name, archetype, directive, actions } = useAppSelector(selectAgent);
+    const addPromptedAction = () => match(
+        fromNullable(prompt("Enter action name:")),
+        (actionName) => dispatch(addAction(actionName)),
+        () => undefined,
+    );
 
     return (
         <div className="flex-1 overflow-auto p-8 lg:p-12 space-y-12 max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-5 duration-500">
@@ -23,14 +28,6 @@ export function AgentEditor() {
                     <p className="text-muted-foreground font-mono text-xs uppercase tracking-widest">Designing Soul Manifest #0X-F4B1</p>
                 </div>
                 <div className="flex items-center gap-4">
-                    <Button
-                        variant="outline"
-                        size="sm"
-                        className="border-gold/30 text-gold hover:bg-gold/10"
-                        onClick={() => dispatch(exportSoul())}
-                    >
-                        <Zap className="size-3 mr-2" /> Export Soul
-                    </Button>
                     <Badge variant="outline" className="border-gold/30 text-gold bg-gold/5 px-3 py-1 font-mono text-[10px]">
                         STABLE_MANIFOLD
                     </Badge>
@@ -129,10 +126,7 @@ export function AgentEditor() {
                         </div>
                     ))}
                     <div
-                        onClick={() => {
-                            const n = prompt("Enter action name:");
-                            n && dispatch(addAction(n));
-                        }}
+                        onClick={addPromptedAction}
                         className="p-4 rounded-xl border border-dashed border-border bg-black/5 flex items-center justify-center hover:bg-gold/5 hover:border-gold/40 transition-all cursor-pointer"
                     >
                         <span className="text-xs text-muted-foreground flex items-center gap-2">

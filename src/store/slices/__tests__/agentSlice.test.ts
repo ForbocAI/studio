@@ -1,16 +1,10 @@
 import { describe, it, expect } from 'vitest';
 import agentReducer, { setName, setArchetype, setDirective, addAction, removeAction } from '../agentSlice';
+import agentData from '../../../../data/workbench/agent.json';
 
 describe('agentSlice', () => {
     const initialState = {
-        name: 'Malakor the Wise',
-        archetype: 'Scholar',
-        directive: 'Provide deep insights and historical context with a touch of arcane mystery.',
-        actions: [
-            { id: '1', name: 'scout_area' },
-            { id: '2', name: 'cast_spell' },
-            { id: '3', name: 'query_lore' },
-        ],
+        ...agentData,
     };
 
     it('should handle initial state', () => {
@@ -44,9 +38,10 @@ describe('agentSlice', () => {
 
         describe('When removeAction is dispatched', () => {
             it('Then it should remove the action by id', () => {
-                const nextState = agentReducer(initialState, removeAction('1'));
-                expect(nextState.actions).toHaveLength(2);
-                expect(nextState.actions.find(a => a.id === '1')).toBeUndefined();
+                const [removed, ...remaining] = agentData.actions;
+                const nextState = agentReducer(initialState, removeAction(removed.id));
+                expect(nextState.actions).toHaveLength(remaining.length);
+                expect(nextState.actions.find(({ id }) => id === removed.id)).toBeUndefined();
             });
         });
     });

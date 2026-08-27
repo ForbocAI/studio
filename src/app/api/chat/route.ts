@@ -1,15 +1,46 @@
-import { streamText } from 'ai';
-import { openai } from '@ai-sdk/openai';
+import { fromNullable, match } from '@forbocai/core';
+import { NextResponse } from 'next/server';
+import authContract from '../../../../data/contracts/auth.json';
+import sdkContract from '../../../../data/contracts/sdk.json';
+import { parseStudioNpcRequest } from '@/components/sdk/npcRequestAdapters';
+import { runStudioNpc } from '@/components/sdk/serverNpcRuntime';
+import { getSessionFromCookies } from '@/lib/auth';
 
-// This is a placeholder. You'll need to set OPENAI_API_KEY in .env
-export async function POST(req: Request) {
-    const { messages } = await req.json();
+const unauthorized = (): NextResponse => NextResponse.json(
+    { error: authContract.messages.unauthorized },
+    { status: sdkContract.http.status.unauthorized },
+);
 
-    const result = streamText({
-        model: openai('gpt-4o'),
-        messages,
-        system: "You are an Arcane AI Agent built with the Forboc SDK. Speak in a scholarly, slightly medieval tone.",
+const badRequest = (): NextResponse => NextResponse.json(
+    { error: sdkContract.messages.invalidRequest },
+    { status: sdkContract.http.status.badRequest },
+);
+
+const processingFailure = (error: unknown): NextResponse => {
+    console.error(sdkContract.messages.processingFailed, {
+        category: error instanceof Error ? error.name : typeof error,
     });
+    return NextResponse.json(
+        { error: sdkContract.messages.processingFailed },
+        { status: sdkContract.http.status.badGateway },
+    );
+};
 
-    return result.toTextStreamResponse();
-}
+const processBody = (value: unknown): Promise<NextResponse> => match(
+    fromNullable(parseStudioNpcRequest(value)),
+    (request) => runStudioNpc(request)
+        .then((response) => NextResponse.json(response, {
+            status: sdkContract.http.status.ok,
+        }))
+        .catch(processingFailure),
+    () => Promise.resolve(badRequest()),
+);
+
+export const POST = (request: Request): Promise<NextResponse> => getSessionFromCookies()
+    .then((session) => match(
+        fromNullable(session),
+        () => request.json()
+            .then(processBody)
+            .catch(() => badRequest()),
+        () => Promise.resolve(unauthorized()),
+    ));

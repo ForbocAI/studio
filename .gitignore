@@ -13,6 +13,9 @@
 # testing
 /coverage
 
+# SDK-owned local vector runtime
+/local_infrastructure/
+
 # next.js
 /.next/
 /out/

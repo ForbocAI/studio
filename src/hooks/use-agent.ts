@@ -1,7 +1,10 @@
 import { useAppDispatch, useAppSelector } from './../store/hooks';
 import { setAgentChatInput, addAgentMessage, setAgentChatError, selectAgentChat } from '../store/slices/formSlice';
-import { selectAgentDirective } from '../store/slices/agentSlice';
+import { nanoid } from '@reduxjs/toolkit';
+import { selectAgent } from '../store/slices/agentSlice';
 import { useRunProtocolMutation } from '../store/api/agentApi';
+import type { StructuredPersona } from '@forbocai/core';
+import sdkContract from '../../data/contracts/sdk.json';
 
 export interface Message {
     id: string;
@@ -14,7 +17,7 @@ export function useAgent() {
 
     // Select state from Redux
     const { input, messages } = useAppSelector(selectAgentChat);
-    const directive = useAppSelector(selectAgentDirective);
+    const agent = useAppSelector(selectAgent);
 
     // RTK Query mutation
     const [runProtocol, { isLoading }] = useRunProtocolMutation();
@@ -23,26 +26,42 @@ export function useAgent() {
         e?.preventDefault();
         
         return input.trim() ? (() => {
-            const userMsg: Message = { id: Date.now().toString(), role: 'user', content: input };
+            const userMsg: Message = { id: nanoid(), role: 'user', content: input };
             dispatch(addAgentMessage(userMsg));
             dispatch(setAgentChatInput(''));
             dispatch(setAgentChatError(null));
 
             return runProtocol({
-                agentId: 'studio-agent',
+                npcId: agent.id,
                 observation: input,
-                persona: directive
+                structuredPersona: {
+                    traits: [agent.archetype],
+                    goals: [agent.directive],
+                    relationships: [],
+                    world: [],
+                    speakingStyle: [],
+                    constraints: [],
+                } satisfies StructuredPersona,
+                context: {
+                    identity: { name: agent.name },
+                    legalActions: agent.actions.map(({ name }) => name),
+                },
             }).unwrap()
             .then(response => {
                 const assistantMsg: Message = {
-                    id: (Date.now() + 1).toString(),
+                    id: nanoid(),
                     role: 'assistant',
-                    content: response.text
+                    content: response.dialogue,
                 };
                 dispatch(addAgentMessage(assistantMsg));
             })
-            .catch((error: any) => {
-                dispatch(setAgentChatError(error.error || "Agent protocol failed"));
+            .catch((error: unknown) => {
+                const candidate = error as { error?: unknown };
+                dispatch(setAgentChatError(
+                    typeof candidate.error === 'string'
+                        ? candidate.error
+                        : sdkContract.messages.processingFailed,
+                ));
             });
         })() : Promise.resolve();
     };

@@ -1,0 +1,78 @@
+{
+  "cases": {
+    "request": "Studio SDK request decoding",
+    "valid": "accepts a complete structured NPC request",
+    "missingIdentity": "rejects a request without an NPC identifier",
+    "missingObservation": "rejects a request without an observation",
+    "malformedPersona": "rejects a request with malformed persona fields",
+    "missingContext": "rejects a request without game-owned context"
+  },
+  "validRequest": {
+    "npcId": "studio-test-npc",
+    "observation": "A visitor asks about the sealed archive.",
+    "structuredPersona": {
+      "traits": ["observant"],
+      "goals": ["protect the archive"],
+      "relationships": ["the visitor is unknown"],
+      "world": ["the archive is sealed"],
+      "speakingStyle": ["measured"],
+      "constraints": ["do not invent access authority"]
+    },
+    "context": {
+      "availableActions": ["speak", "wait"]
+    }
+  },
+  "invalid": {
+    "missingIdentity": {
+      "npcId": "",
+      "observation": "A visitor waits.",
+      "structuredPersona": {
+        "traits": [],
+        "goals": [],
+        "relationships": [],
+        "world": [],
+        "speakingStyle": [],
+        "constraints": []
+      },
+      "context": {}
+    },
+    "missingObservation": {
+      "npcId": "studio-test-npc",
+      "observation": "",
+      "structuredPersona": {
+        "traits": [],
+        "goals": [],
+        "relationships": [],
+        "world": [],
+        "speakingStyle": [],
+        "constraints": []
+      },
+      "context": {}
+    },
+    "malformedPersona": {
+      "npcId": "studio-test-npc",
+      "observation": "A visitor waits.",
+      "structuredPersona": {
+        "traits": "observant",
+        "goals": [],
+        "relationships": [],
+        "world": [],
+        "speakingStyle": [],
+        "constraints": []
+      },
+      "context": {}
+    },
+    "missingContext": {
+      "npcId": "studio-test-npc",
+      "observation": "A visitor waits.",
+      "structuredPersona": {
+        "traits": [],
+        "goals": [],
+        "relationships": [],
+        "world": [],
+        "speakingStyle": [],
+        "constraints": []
+      }
+    }
+  }
+}

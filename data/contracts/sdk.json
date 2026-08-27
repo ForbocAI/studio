@@ -1,0 +1,29 @@
+{
+  "routes": {
+    "root": "/",
+    "npcProcess": "api/chat"
+  },
+  "serverExternalPackages": [
+    "@forbocai/node",
+    "@lancedb/lancedb"
+  ],
+  "memory": {
+    "namespace": "studio-npc",
+    "separator": "-"
+  },
+  "http": {
+    "methods": {
+      "post": "POST"
+    },
+    "status": {
+      "ok": 200,
+      "badRequest": 400,
+      "unauthorized": 401,
+      "badGateway": 502
+    }
+  },
+  "messages": {
+    "invalidRequest": "NPC request must include an identifier, observation, structured persona, and context",
+    "processingFailed": "ForbocAI NPC processing failed"
+  }
+}

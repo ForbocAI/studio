@@ -30,14 +30,16 @@ Studio provides the authoring and inspection interface. A game remains the
 authority for world state, available actions, action execution, presentation,
 audio, animation, and save data.
 
-Studio sends authored context through ForbocAI interfaces; it does not replace
-the API with browser-owned NPC logic or teach Servitor a particular game.
+Studio sends authored context through an authenticated same-origin route that
+dispatches the published TypeScript SDK. It does not replace the API with
+browser-owned NPC logic or teach Servitor a particular game.
 
 ## Credentials
 
 Use an API key created at <https://account.forboc.ai>. Keep credentials at the
 runtime boundary and out of NPC definitions, exported Souls, logs, and source
-control.
+control. The browser uses the HTTP-only Account session; the API key remains in
+the Studio server runtime.
 
 ## Integration Guides
 

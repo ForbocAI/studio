@@ -1,19 +1,18 @@
 import { baseApi } from './index';
-import { runAgentProtocol, AgentResponse } from '@/lib/sdk-adapter';
+import sdkContract from '../../../data/contracts/sdk.json';
+import type {
+    StudioNpcRequest,
+    StudioNpcResponse,
+} from '@/entities/npc/npcTypes';
 
 export const agentApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
-        // Even though it's a protocol, we wrap it in a mutation to manage loading/error state in Redux
-        runProtocol: builder.mutation<AgentResponse, { agentId: string; observation: string; persona: string }>({
-            queryFn: async ({ agentId, observation, persona }) => {
-                try {
-                    const response = await runAgentProtocol(agentId, observation, persona);
-                    return { data: response };
-                } catch (error: any) {
-                    return { error: { status: 'CUSTOM_ERROR', error: error.message } };
-                }
-            },
-            invalidatesTags: ['Agent'],
+        runProtocol: builder.mutation<StudioNpcResponse, StudioNpcRequest>({
+            query: (body) => ({
+                url: sdkContract.routes.npcProcess,
+                method: sdkContract.http.methods.post,
+                body,
+            }),
         }),
     }),
 });

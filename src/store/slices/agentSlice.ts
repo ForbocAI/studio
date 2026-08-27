@@ -1,11 +1,13 @@
 import { createSlice, PayloadAction, createSelector, nanoid } from '@reduxjs/toolkit';
+import agentData from '../../../data/workbench/agent.json';
 
-interface AgentAction {
+export interface AgentAction {
     id: string;
     name: string;
 }
 
-interface AgentState {
+export interface AgentState {
+    id: string;
     name: string;
     archetype: string;
     directive: string;
@@ -13,14 +15,11 @@ interface AgentState {
 }
 
 const initialState: AgentState = {
-    name: 'Malakor the Wise',
-    archetype: 'Scholar',
-    directive: 'Provide deep insights and historical context with a touch of arcane mystery.',
-    actions: [
-        { id: '1', name: 'scout_area' },
-        { id: '2', name: 'cast_spell' },
-        { id: '3', name: 'query_lore' },
-    ],
+    id: agentData.id,
+    name: agentData.name,
+    archetype: agentData.archetype,
+    directive: agentData.directive,
+    actions: agentData.actions,
 };
 
 export const agentSlice = createSlice({
@@ -50,17 +49,13 @@ export const agentSlice = createSlice({
         removeAction: (state, action: PayloadAction<string>) => {
             state.actions = state.actions.filter((a) => a.id !== action.payload);
         },
-        exportSoul: (state) => {
-            // This is a semantic action that listeners can react to
-            console.log("Exporting Soul to Arweave...");
-        },
     },
 });
 
-export const { setName, setArchetype, setDirective, addAction, removeAction, exportSoul } = agentSlice.actions;
+export const { setName, setArchetype, setDirective, addAction, removeAction } = agentSlice.actions;
 
 // Selectors
-const selectSelf = (state: any) => state.agent;
+const selectSelf = (state: { agent: AgentState }) => state.agent;
 
 export const selectAgent = createSelector(selectSelf, (agent) => agent);
 export const selectAgentName = createSelector(selectSelf, (agent) => agent.name as string);

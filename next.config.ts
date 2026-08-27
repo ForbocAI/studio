@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
+import sdkContract from "./data/contracts/sdk.json";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  serverExternalPackages: sdkContract.serverExternalPackages,
 };
 
 export default nextConfig;
