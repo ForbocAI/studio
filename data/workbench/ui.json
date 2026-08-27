@@ -1,0 +1,24 @@
+{
+  "initial": {
+    "activeView": "architect",
+    "showPlayground": true,
+    "sidebar": {
+      "open": true,
+      "openMobile": false,
+      "isMobile": false
+    }
+  },
+  "responsive": {
+    "maximumMobileWidthPixels": 767,
+    "sidebarShortcutKey": "b",
+    "events": {
+      "change": "change",
+      "keydown": "keydown"
+    }
+  },
+  "persistence": {
+    "key": "forbocai-studio-root",
+    "version": 2,
+    "slices": ["agent", "ui"]
+  }
+}

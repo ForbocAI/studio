@@ -1,56 +1,56 @@
 "use client";
 
-import { SidebarProvider, SidebarInset } from "@/components/ui/sidebar";
-import { WorkbenchSidebar } from "./sidebar";
-import { AgentEditor } from "./editor";
-import { Playground } from "./playground";
-import { BrainScan } from "./brain-scan";
-import { TraceLogs } from "./trace-logs";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setActiveView, setShowPlayground } from "@/store/slices/uiSlice";
-import { Button } from "@/components/ui/button";
-import { MessageSquare, ChevronRight } from "lucide-react";
+import { MessageSquare } from 'lucide-react';
+import navigation from '../../../data/workbench/navigation.json';
+import { Button } from '@/components/ui/button';
+import { SidebarProvider } from '@/components/ui/sidebar/sidebar-context';
+import {
+    SidebarInset,
+    SidebarTrigger,
+} from '@/components/ui/sidebar/sidebar-surface';
+import {
+    playgroundVisibilityChanged,
+    selectActiveView,
+    selectShowPlayground,
+} from '@/entities/ui/uiSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
+import { BrainScan } from './brain-scan';
+import { AgentEditor } from './editor';
+import { Playground } from './playground';
+import { WorkbenchSidebar } from './sidebar';
+import { TraceLogs } from './trace-logs';
 
-export function WorkbenchLayout() {
+export const WorkbenchLayout = () => {
     const dispatch = useAppDispatch();
-    const showPlayground = useAppSelector((state) => state.ui.showPlayground);
-    const activeView = useAppSelector((state) => state.ui.activeView);
-
+    const showPlayground = useAppSelector(selectShowPlayground);
+    const activeView = useAppSelector(selectActiveView);
     return (
         <SidebarProvider>
-            <div className="flex h-screen w-full bg-background overflow-hidden selection:bg-gold/20 selection:text-gold uppercase-headings">
+            <div className="flex h-screen w-full overflow-hidden bg-background">
                 <WorkbenchSidebar />
-                <SidebarInset className="flex flex-col flex-1 relative bg-[radial-gradient(ellipse_at_top,oklch(0.2_0.05_280/0.05),transparent)] overflow-hidden">
-                    <main className="flex flex-1 overflow-hidden relative">
+                <SidebarInset className="flex flex-1 flex-col overflow-hidden bg-background">
+                    <div className="absolute left-4 top-4 z-30 md:hidden">
+                        <SidebarTrigger />
+                    </div>
+                    <main className="relative flex flex-1 overflow-hidden">
                         {activeView === 'architect' && <AgentEditor />}
                         {activeView === 'brain' && <BrainScan />}
                         {activeView === 'trace' && <TraceLogs />}
-
                         {showPlayground && (
-                            <aside className="hidden xl:block">
+                            <aside className="absolute inset-y-0 right-0 z-20 w-full max-w-md xl:relative xl:z-auto">
                                 <Playground />
                             </aside>
                         )}
-
                         {!showPlayground && (
                             <Button
-                                variant="ghost"
+                                variant="outline"
                                 size="icon"
-                                className="absolute right-4 top-4 z-50 rounded-full border border-border bg-background shadow-lg"
-                                onClick={() => dispatch(setShowPlayground(true))}
+                                className="absolute right-4 top-4 z-20"
+                                onClick={() => dispatch(playgroundVisibilityChanged(true))}
+                                aria-label={navigation.playground.showLabel}
+                                title={navigation.playground.showLabel}
                             >
                                 <MessageSquare className="size-4" />
-                            </Button>
-                        )}
-
-                        {showPlayground && (
-                            <Button
-                                variant="ghost"
-                                size="icon"
-                                className="absolute right-[430px] top-4 z-50 rounded-full border border-border bg-background shadow-lg xl:block hidden"
-                                onClick={() => dispatch(setShowPlayground(false))}
-                            >
-                                <ChevronRight className="size-4" />
                             </Button>
                         )}
                     </main>
@@ -58,4 +58,4 @@ export function WorkbenchLayout() {
             </div>
         </SidebarProvider>
     );
-}
+};

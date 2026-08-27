@@ -3,7 +3,7 @@ import type { StudioNpcRequest } from '@/entities/npc/npcTypes';
 type UnknownRecord = Readonly<Record<string, unknown>>;
 
 const isRecord = (value: unknown): value is UnknownRecord =>
-    typeof value === 'object' && value !== null && !Array.isArray(value);
+    typeof value === 'object' && Boolean(value) && !Array.isArray(value);
 
 const record = (value: unknown): UnknownRecord =>
     isRecord(value) ? value : {};
@@ -46,3 +46,11 @@ export const parseStudioNpcRequest = (value: unknown): StudioNpcRequest | null =
         }
         : null;
 };
+
+export const parseMemoryNpcId = (value: unknown): string | null => {
+    const npcId = typeof value === 'string' ? value.trim() : '';
+    return npcId || null;
+};
+
+export const isSuccessfulStudioNpcResponse = (value: unknown): boolean =>
+    record(record(value).metadata).valid === true;

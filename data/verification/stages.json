@@ -1,0 +1,70 @@
+{
+  "title": "ForbocAI Studio release verification",
+  "statuses": {
+    "passed": "PASS",
+    "failed": "FAIL",
+    "skipped": "SKIP"
+  },
+  "stages": [
+    {
+      "id": "dependencies",
+      "label": "Deterministic dependency install",
+      "command": "corepack",
+      "arguments": ["npm@11.19.1", "ci", "--no-audit", "--no-fund"]
+    },
+    {
+      "id": "authored-data",
+      "label": "Authored JSON and test-data ownership",
+      "command": "node",
+      "arguments": ["scripts/verification/check-data-ownership.mjs"]
+    },
+    {
+      "id": "architecture",
+      "label": "Store, API, credential, line, and fan-out boundaries",
+      "command": "node",
+      "arguments": ["scripts/verification/check-architecture.mjs"]
+    },
+    {
+      "id": "fp",
+      "label": "Functional composition",
+      "command": "node",
+      "arguments": ["scripts/verification/check-fp.mjs"]
+    },
+    {
+      "id": "rtk",
+      "label": "Redux Toolkit architecture",
+      "command": "bash",
+      "arguments": ["scripts/verification/check-rtk.sh"]
+    },
+    {
+      "id": "typecheck",
+      "label": "TypeScript",
+      "command": "corepack",
+      "arguments": ["npm@11.19.1", "run", "typecheck"]
+    },
+    {
+      "id": "lint",
+      "label": "ESLint",
+      "command": "corepack",
+      "arguments": ["npm@11.19.1", "run", "lint"]
+    },
+    {
+      "id": "tests",
+      "label": "Unit and boundary tests",
+      "command": "corepack",
+      "arguments": ["npm@11.19.1", "test", "--", "--run"]
+    },
+    {
+      "id": "audit",
+      "label": "Dependency vulnerability audit",
+      "command": "corepack",
+      "arguments": ["npm@11.19.1", "audit", "--audit-level=low"]
+    },
+    {
+      "id": "build",
+      "label": "Next.js production artifact",
+      "command": "corepack",
+      "arguments": ["npm@11.19.1", "run", "build"]
+    }
+  ]
+}

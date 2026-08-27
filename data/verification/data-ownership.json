@@ -1,0 +1,30 @@
+{
+  "jsonRoots": ["data"],
+  "testRoots": ["src"],
+  "testSuffixes": [".test.ts", ".test.tsx", ".spec.ts", ".spec.tsx"],
+  "sourceRoots": ["src"],
+  "forbiddenSourcePatterns": [
+    {
+      "value": "NEXT_PUBLIC_FORBOCAI_API_KEY",
+      "reason": "Privileged SDK credentials remain server-only"
+    },
+    {
+      "value": "GPT-4O-MINI-ARCANE",
+      "reason": "Studio never presents an invented model identity"
+    },
+    {
+      "value": "Encountered Malakor at the gates",
+      "reason": "Memory diagnostics render SDK records rather than fixtures"
+    },
+    {
+      "value": "API Latency: 42ms",
+      "reason": "Protocol timing comes from RTK lifecycle evidence"
+    }
+  ],
+  "messages": {
+    "invalidJson": "Invalid authored JSON",
+    "testLiteral": "Test semantic values must come from authored JSON",
+    "forbiddenSource": "Forbidden placeholder or credential pattern",
+    "passed": "Authored-data ownership passed"
+  }
+}

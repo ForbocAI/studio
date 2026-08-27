@@ -54,5 +54,8 @@
   },
   "allowScripts": {
     "unrs-resolver@1.11.1": true
+  },
+  "overrides": {
+    "@lancedb/lancedb": "0.22.3"
   }
 }

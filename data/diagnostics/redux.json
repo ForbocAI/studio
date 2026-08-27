@@ -1,0 +1,13 @@
+{
+  "environmentVariable": "NEXT_PUBLIC_STUDIO_REDUX_LOGGING",
+  "enabledValue": "enabled",
+  "traceLimit": 100,
+  "operations": ["runProtocol", "listNpcMemory"],
+  "statuses": {
+    "pending": "pending",
+    "fulfilled": "fulfilled",
+    "rejected": "rejected"
+  },
+  "unknownAction": "unknown",
+  "unknownOperation": "unknown-operation"
+}

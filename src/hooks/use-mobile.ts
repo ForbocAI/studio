@@ -1,7 +1,4 @@
-import { useAppSelector } from "@/store/hooks"
+import { selectIsMobile } from '@/entities/ui/uiSlice';
+import { useAppSelector } from '@/store/hooks';
 
-const MOBILE_BREAKPOINT = 768
-
-export function useIsMobile() {
-  return useAppSelector((state) => state.ui.sidebar.isMobile)
-}
+export const useIsMobile = (): boolean => useAppSelector(selectIsMobile);

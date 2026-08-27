@@ -1,66 +1,112 @@
 "use client";
-import { Brain, Database, Search, Filter } from "lucide-react";
-import { Input } from "@/components/ui/input";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 
-export function BrainScan() {
-    const memories = [
-        { id: '1', text: 'Encountered Malakor at the gates.', importance: 0.8, timestamp: '2 minutes ago', type: 'experience' },
-        { id: '2', text: 'Learned the secret of the silver key.', importance: 0.95, timestamp: '1 hour ago', type: 'lore' },
-        { id: '3', text: 'The sky turned red when the spell was cast.', importance: 0.6, timestamp: '3 hours ago', type: 'observation' },
-    ];
+import { useMemo, useState } from 'react';
+import { Database, Search } from 'lucide-react';
+import { fromNullable, match } from '@forbocai/core';
+import content from '../../../data/workbench/memory.json';
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import { selectAgent } from '@/entities/agent/agentSlice';
+import { useListNpcMemoryQuery } from '@/store/api/agentApi';
+import { useAppSelector } from '@/store/hooks';
+
+const formatTimestamp = (timestamp: number): string => new Intl.DateTimeFormat(
+    content.timestampLocale,
+    { dateStyle: 'medium', timeStyle: 'short' },
+).format(new Date(timestamp));
+
+const formatScore = (value: number): string => value.toFixed(content.fractionDigits);
+
+export const BrainScan = () => {
+    const agent = useAppSelector(selectAgent);
+    const [query, setQuery] = useState('');
+    const { data = [], isError, isFetching } = useListNpcMemoryQuery(agent.id);
+    const normalizedQuery = query.trim().toLocaleLowerCase();
+    const memories = useMemo(
+        () => data.filter((memory) => normalizedQuery.length === 0
+            || memory.text.toLocaleLowerCase().includes(normalizedQuery)
+            || memory.type.toLocaleLowerCase().includes(normalizedQuery)),
+        [data, normalizedQuery],
+    );
 
     return (
-        <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in duration-500">
-            <header className="p-8 border-b border-border/50">
-                <div className="flex items-center justify-between mb-6">
+        <div className="flex flex-1 flex-col overflow-hidden pt-12 md:pt-0">
+            <header className="space-y-5 border-b border-border p-6 lg:p-8">
+                <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="space-y-1">
-                        <h1 className="text-3xl font-serif font-bold text-gold">Brain Scan</h1>
-                        <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-widest">Inspecting Long-Term Vector Manifold</p>
+                        <h1 className="text-3xl font-serif font-bold text-gold">
+                            {content.heading}
+                        </h1>
+                        <p className="text-sm text-muted-foreground">{content.description}</p>
                     </div>
-                    <Badge className="bg-arcane-purple/20 text-arcane-purple border-arcane-purple/30 font-mono">
-                        CONNECTED: LANCE_DB
-                    </Badge>
+                    <Badge variant="outline">{content.connected}</Badge>
                 </div>
-                <div className="flex gap-4">
-                    <div className="relative flex-1">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-muted-foreground" />
-                        <Input placeholder="Search memory vectors..." className="pl-10 bg-black/40 border-border/30" />
-                    </div>
-                    <Button variant="outline" className="border-border/30">
-                        <Filter className="size-4 mr-2" /> Filter
-                    </Button>
+                <div className="relative max-w-2xl">
+                    <Search className="absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
+                    <Input
+                        value={query}
+                        onChange={(event) => setQuery(event.target.value)}
+                        placeholder={content.searchPlaceholder}
+                        className="pl-10"
+                    />
                 </div>
             </header>
 
-            <ScrollArea className="flex-1 p-8">
+            <ScrollArea className="flex-1 p-6 lg:p-8">
+                {isFetching && <p className="text-sm text-muted-foreground">{content.loading}</p>}
+                {isError && <p role="alert" className="text-sm text-destructive">{content.error}</p>}
+                {!isFetching && !isError && memories.length === 0 && (
+                    <p className="text-sm text-muted-foreground">{content.empty}</p>
+                )}
                 <div className="grid gap-4">
-                    {memories.map((m) => (
-                        <div key={m.id} className="p-4 rounded-xl border border-border/30 bg-black/20 hover:border-gold/30 transition-all group">
-                            <div className="flex items-center justify-between mb-2">
-                                <Badge variant="secondary" className="text-[10px] font-mono uppercase bg-white/5">{m.type}</Badge>
-                                <span className="text-[10px] text-muted-foreground font-mono">{m.timestamp}</span>
-                            </div>
-                            <p className="text-sm leading-relaxed text-foreground/80 mb-4">{m.text}</p>
-                            <div className="flex items-center gap-4 text-[10px] font-mono text-muted-foreground">
-                                <div className="flex items-center gap-1">
-                                    <Database className="size-3" />
-                                    <span>ID: {m.id}</span>
+                    {memories.map((memory) => {
+                        const progress = Math.min(
+                            content.percentageMaximum,
+                            Math.max(
+                                0,
+                                memory.importance / content.importanceMaximum
+                                    * content.percentageMaximum,
+                            ),
+                        );
+                        return (
+                            <article key={memory.id} className="rounded border border-border bg-card p-4">
+                                <div className="mb-3 flex items-center justify-between gap-3">
+                                    <Badge variant="secondary">{memory.type}</Badge>
+                                    <time className="text-xs text-muted-foreground">
+                                        {formatTimestamp(memory.timestamp)}
+                                    </time>
                                 </div>
-                                <div className="flex items-center gap-1">
-                                    <div className="w-20 h-1 bg-white/5 rounded-full overflow-hidden">
-                                        <div className="h-full bg-gold" style={{ width: `${m.importance * 100}%` }} />
-                                    </div>
-                                    <span>Importance: {m.importance}</span>
+                                <p className="mb-4 text-sm leading-relaxed">{memory.text}</p>
+                                <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+                                    <span className="flex items-center gap-1 font-mono">
+                                        <Database className="size-3" />
+                                        {content.identifierLabel}: {memory.id}
+                                    </span>
+                                    <span>
+                                        {content.importanceLabel}: {formatScore(memory.importance)}
+                                    </span>
+                                    {match(
+                                        fromNullable(memory.similarity),
+                                        (similarity) => (
+                                            <span>
+                                                {content.similarityLabel}: {formatScore(similarity)}
+                                            </span>
+                                        ),
+                                        () => null,
+                                    )}
+                                    <span className="h-1 w-24 overflow-hidden rounded bg-muted">
+                                        <span
+                                            className="block h-full bg-gold"
+                                            style={{ width: `${progress}%` }}
+                                        />
+                                    </span>
                                 </div>
-                            </div>
-                        </div>
-                    ))}
+                            </article>
+                        );
+                    })}
                 </div>
             </ScrollArea>
         </div>
     );
-}
-
-import { Button } from "@/components/ui/button";
+};

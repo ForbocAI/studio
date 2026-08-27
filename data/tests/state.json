@@ -1,0 +1,53 @@
+{
+  "cases": {
+    "agentSuite": "agent entity state",
+    "agentInitial": "loads the authored agent as the active entity",
+    "agentName": "updates the active entity name",
+    "agentAction": "adds an action component to the active entity",
+    "agentRemoveAction": "removes an action component from the active entity",
+    "chatSuite": "chat entity state",
+    "chatInitial": "starts with no transcript entities",
+    "chatMessage": "adds a transcript entity",
+    "chatClear": "clears transcript entities and failure state",
+    "traceSuite": "protocol trace entity state",
+    "traceLifecycle": "records a redacted request lifecycle",
+    "traceLimit": "retains the declared trace limit",
+    "uiSuite": "workbench UI state",
+    "uiInitial": "loads authored UI preferences",
+    "uiView": "changes the active view",
+    "uiSidebar": "toggles the sidebar",
+    "uiViewport": "records responsive state"
+  },
+  "agent": {
+    "updatedName": "Contract NPC",
+    "action": {
+      "id": "observe",
+      "name": "OBSERVE"
+    }
+  },
+  "chat": {
+    "role": "user",
+    "content": "Inspect the current context.",
+    "action": "OBSERVE",
+    "thought": "The supplied context supports observation.",
+    "failure": "Request unavailable"
+  },
+  "trace": {
+    "requestId": "request-fixture",
+    "operation": "runProtocol",
+    "startedAt": 1000,
+    "completedAt": 1042,
+    "overflow": 2
+  },
+  "ui": {
+    "alternateView": "brain",
+    "mobile": true
+  },
+  "structural": {
+    "unknownAction": "test/unknown",
+    "emptyCount": 0,
+    "singleCount": 1,
+    "firstIndex": 0,
+    "lastIndex": -1
+  }
+}

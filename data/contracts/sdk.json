@@ -1,7 +1,8 @@
 {
   "routes": {
     "root": "/",
-    "npcProcess": "api/chat"
+    "npcProcess": "api/chat",
+    "npcMemory": "api/memory"
   },
   "serverExternalPackages": [
     "@forbocai/node",
@@ -9,11 +10,18 @@
   ],
   "memory": {
     "namespace": "studio-npc",
-    "separator": "-"
+    "separator": "-",
+    "queryParameter": "npcId",
+    "pageLimit": 100,
+    "pageOffset": 0
+  },
+  "cacheTags": {
+    "memory": "Memory"
   },
   "http": {
     "methods": {
-      "post": "POST"
+      "post": "POST",
+      "get": "GET"
     },
     "status": {
       "ok": 200,
@@ -24,6 +32,8 @@
   },
   "messages": {
     "invalidRequest": "NPC request must include an identifier, observation, structured persona, and context",
+    "invalidMemoryRequest": "NPC memory request must include an identifier",
+    "invalidResponse": "ForbocAI NPC did not produce a valid result",
     "processingFailed": "ForbocAI NPC processing failed"
   }
 }

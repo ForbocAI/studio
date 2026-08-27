@@ -1,45 +1,45 @@
 # ForbocAI Studio
 
 ForbocAI Studio is the visual workspace for composing, exercising, and
-inspecting game-defined NPCs against the ForbocAI NPC protocol.
+inspecting game-defined NPCs through the ForbocAI NPC SDK and API.
 
 - Studio: <https://studio.forboc.ai>
 - Account and API keys: <https://account.forboc.ai>
 - SDK documentation: <https://docs.forboc.ai>
 
-## NPC Workflow
+## Workbench
 
-The Studio product contract unifies one workflow for:
+Studio provides one connected NPC workflow:
 
-1. defining an NPC identity, structured persona, goals, traits, and permitted
-   action vocabulary
-2. exercising conversations with runtime observations and game-owned context
-3. inspecting recalled memory, protocol instructions, committed results,
-   rationales, validation, and timing evidence
-4. refining the definition while preserving the boundary between NPC behavior
-   and game rules
-5. exporting a portable Soul through the same SDK-owned persistence contract
-   used by a game runtime
+1. define an NPC identity, primary trait, goal, and game-permitted action
+   vocabulary
+2. send observations through the published TypeScript SDK to the ForbocAI API
+3. inspect the NPC's SDK-owned vector memory
+4. inspect redacted request status and round-trip timing without exposing
+   persona, observations, responses, sessions, or API credentials
+5. refine the NPC definition while the game remains authoritative for world
+   state and action execution
 
 ## Ownership Boundary
 
 The ForbocAI API owns inference, orchestration, decision policy, grounded
-rationale, diagnosis, and output validation. The SDK owns API transport plus the
-vector-memory and permanent Soul effects that must execute beside the client.
-Studio provides the authoring and inspection interface. A game remains the
-authority for world state, available actions, action execution, presentation,
-audio, animation, and save data.
+rationale, diagnosis, and output validation. The SDK owns API transport plus
+the vector-memory and permanent Soul effects that execute beside the client.
+Studio owns authoring and inspection. A game remains authoritative for world
+state, available actions, action execution, presentation, audio, animation,
+and save data.
 
-Studio sends authored context through an authenticated same-origin route that
-dispatches the published TypeScript SDK. It does not replace the API with
-browser-owned NPC logic or teach Servitor a particular game.
+Studio sends authored context through an authenticated same-origin server route
+that dispatches the published TypeScript SDK. The browser neither calls the
+ForbocAI API directly nor receives a privileged API key. Studio does not replace
+API cognition with browser logic or teach Servitor a particular game.
 
 ## Credentials
 
-Use an API key created at <https://account.forboc.ai>. Keep credentials at the
-runtime boundary and out of NPC definitions, exported Souls, logs, and source
-control. The browser uses the HTTP-only Account session; the API key remains in
-the Studio server runtime.
+Sign in through <https://account.forboc.ai>. The browser uses the shared,
+HTTP-only Account session. API credentials remain inside the Studio server and
+stay out of NPC definitions, memory, diagnostics, browser bundles, and source
+control.
 
 ## Integration Guides
 

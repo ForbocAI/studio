@@ -5,7 +5,11 @@
     "missingIdentity": "rejects a request without an NPC identifier",
     "missingObservation": "rejects a request without an observation",
     "malformedPersona": "rejects a request with malformed persona fields",
-    "missingContext": "rejects a request without game-owned context"
+    "missingContext": "rejects a request without game-owned context",
+    "validResponse": "accepts a valid SDK finalization",
+    "invalidResponse": "rejects an invalid SDK finalization",
+    "memoryIdentity": "accepts a normalized memory NPC identifier",
+    "missingMemoryIdentity": "rejects an empty memory NPC identifier"
   },
   "validRequest": {
     "npcId": "studio-test-npc",
@@ -73,6 +77,19 @@
         "speakingStyle": [],
         "constraints": []
       }
+    }
+  },
+  "memory": {
+    "npcId": " studio-test-npc ",
+    "normalizedNpcId": "studio-test-npc",
+    "missingNpcId": "   "
+  },
+  "responses": {
+    "valid": {
+      "metadata": { "valid": true }
+    },
+    "invalid": {
+      "metadata": { "valid": false }
     }
   }
 }

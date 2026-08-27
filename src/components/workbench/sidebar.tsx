@@ -1,172 +1,88 @@
 "use client";
 
-import * as React from "react";
-import Image from "next/image";
+import Image from 'next/image';
 import {
-    Book,
-    Code2,
-    History,
+    Activity,
+    Brain,
     LayoutDashboard,
-    Library,
-    Settings2,
-    Sparkles,
-    Sword
-} from "lucide-react";
-
+    type LucideIcon,
+} from 'lucide-react';
+import navigation from '../../../data/workbench/navigation.json';
 import {
     Sidebar,
     SidebarContent,
-    SidebarFooter,
+    SidebarGroup,
+    SidebarGroupLabel,
     SidebarHeader,
+} from '@/components/ui/sidebar/sidebar-surface';
+import {
     SidebarMenu,
     SidebarMenuButton,
     SidebarMenuItem,
-    SidebarMenuSub,
-    SidebarMenuSubButton,
-    SidebarMenuSubItem,
-    SidebarGroup,
-    SidebarGroupLabel,
-    SidebarGroupContent,
-} from "@/components/ui/sidebar";
+} from '@/components/ui/sidebar/sidebar-menu';
+import {
+    activeViewChanged,
+    selectActiveView,
+    type ActiveView,
+} from '@/entities/ui/uiSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
-const data = {
-    navMain: [
-        {
-            title: "Divine Workbench",
-            url: "#",
-            icon: LayoutDashboard,
-            isActive: true,
-            items: [
-                {
-                    title: "Agent Architect",
-                    url: "#",
-                },
-                {
-                    title: "Lore Weaver",
-                    url: "#",
-                },
-                {
-                    title: "State Machine",
-                    url: "#",
-                },
-            ],
-        },
-        {
-            title: "Grimoires",
-            url: "#",
-            icon: Book,
-            items: [
-                {
-                    title: "Prime Directives",
-                    url: "#",
-                },
-                {
-                    title: "Action Schemas",
-                    url: "#",
-                },
-            ],
-        },
-    ],
-    secondary: [
-        {
-            title: "Arsenal",
-            url: "#",
-            icon: Sword,
-        },
-        {
-            title: "Chronicles",
-            url: "#",
-            icon: History,
-        },
-        {
-            title: "Settings",
-            url: "#",
-            icon: Settings2,
-        },
-    ],
+const icons: Readonly<Record<string, LucideIcon>> = {
+    architect: LayoutDashboard,
+    brain: Brain,
+    trace: Activity,
 };
 
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { setActiveView } from "@/store/slices/uiSlice";
-
-export function WorkbenchSidebar({
-    ...props
-}: React.ComponentProps<typeof Sidebar>) {
+export const WorkbenchSidebar = () => {
     const dispatch = useAppDispatch();
-    const activeView = useAppSelector((state) => state.ui.activeView);
+    const activeView = useAppSelector(selectActiveView);
     return (
-        <Sidebar variant="inset" {...props} className="border-r border-border/50 bg-sidebar/50 backdrop-blur-md">
+        <Sidebar variant="inset" className="border-r border-border/50 bg-sidebar/50">
             <SidebarHeader className="h-16 border-b border-border/50 flex items-center px-6">
                 <div className="flex items-center gap-3">
-                    <Image src="/logo.png" alt="Forboc AI" width={32} height={32} className="rounded-lg object-contain" />
+                    <Image
+                        src={navigation.brand.logo}
+                        alt={navigation.brand.logoAlt}
+                        width={navigation.brand.logoWidth}
+                        height={navigation.brand.logoHeight}
+                        className="rounded object-contain"
+                    />
                     <div className="flex flex-col">
-                        <span className="font-serif text-lg font-bold tracking-tight text-gold">FORBOC</span>
-                        <span className="text-[10px] uppercase tracking-[0.2em] text-muted-foreground -mt-1">Studio</span>
+                        <span className="font-serif text-lg font-bold text-gold">
+                            {navigation.brand.name}
+                        </span>
+                        <span className="text-[10px] uppercase text-muted-foreground">
+                            {navigation.brand.product}
+                        </span>
                     </div>
                 </div>
             </SidebarHeader>
             <SidebarContent>
                 <SidebarGroup>
-                    <SidebarGroupLabel className="font-mono text-[10px] uppercase tracking-widest text-muted-foreground/50">Core Modules</SidebarGroupLabel>
+                    <SidebarGroupLabel className="font-mono uppercase text-muted-foreground/70">
+                        {navigation.groupLabel}
+                    </SidebarGroupLabel>
                     <SidebarMenu>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton
-                                isActive={activeView === 'architect'}
-                                onClick={() => dispatch(setActiveView('architect'))}
-                                tooltip="Agent Architect"
-                            >
-                                <LayoutDashboard className="text-gold/70" />
-                                <span className="font-medium">Agent Architect</span>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton
-                                isActive={activeView === 'brain'}
-                                onClick={() => dispatch(setActiveView('brain'))}
-                                tooltip="Lore Weaver (Brain)"
-                            >
-                                <Library className="text-gold/70" />
-                                <span className="font-medium">Lore Weaver</span>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                        <SidebarMenuItem>
-                            <SidebarMenuButton
-                                isActive={activeView === 'trace'}
-                                onClick={() => dispatch(setActiveView('trace'))}
-                                tooltip="Trace Logs"
-                            >
-                                <Code2 className="text-gold/70" />
-                                <span className="font-medium">Trace Logs</span>
-                            </SidebarMenuButton>
-                        </SidebarMenuItem>
-                    </SidebarMenu>
-                </SidebarGroup>
-                <SidebarGroup className="mt-auto">
-                    <SidebarGroupContent>
-                        <SidebarMenu>
-                            {data.secondary.map((item) => (
-                                <SidebarMenuItem key={item.title}>
-                                    <SidebarMenuButton asChild size="sm" className="hover:bg-accent/50">
-                                        <a href={item.url}>
-                                            <item.icon />
-                                            <span>{item.title}</span>
-                                        </a>
+                        {navigation.views.map((view) => {
+                            const Icon = icons[view.icon];
+                            return (
+                                <SidebarMenuItem key={view.id}>
+                                    <SidebarMenuButton
+                                        isActive={activeView === view.id}
+                                        onClick={() => dispatch(activeViewChanged(
+                                            view.id as ActiveView,
+                                        ))}
+                                        tooltip={view.tooltip}
+                                    >
+                                        <Icon className="text-gold/70" />
+                                        <span>{view.label}</span>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
-                            ))}
-                        </SidebarMenu>
-                    </SidebarGroupContent>
+                            );
+                        })}
+                    </SidebarMenu>
                 </SidebarGroup>
             </SidebarContent>
-            <SidebarFooter className="border-t border-border/50 p-4">
-                <div className="flex items-center gap-3 rounded-lg border border-border/50 bg-black/20 p-3 backdrop-blur-sm">
-                    <div className="size-8 rounded-full bg-linear-to-br from-gold to-arcane-purple opacity-80" />
-                    <div className="flex flex-col">
-                        <p className="text-xs font-medium">Grandmaster</p>
-                        <p className="text-[10px] text-muted-foreground">Admin Access</p>
-                    </div>
-                </div>
-            </SidebarFooter>
         </Sidebar>
     );
-}
+};

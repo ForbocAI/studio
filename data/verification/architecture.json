@@ -1,0 +1,25 @@
+{
+  "sourceDirectory": "src",
+  "sourceExtensions": [".js", ".jsx", ".mjs", ".cjs", ".ts", ".tsx", ".mts", ".cts"],
+  "excludedSegments": ["node_modules", ".next", "dist", "build", "coverage", "__tests__"],
+  "maximumSourceLines": 300,
+  "maximumDirectSubdomains": 7,
+  "expectedRootStores": 1,
+  "expectedApiRoots": 1,
+  "patterns": {
+    "rootStore": "\\bconfigureStore\\s*\\(",
+    "apiRoot": "\\bcreateApi\\s*\\(",
+    "directFetch": "\\bfetch\\s*\\(",
+    "publicApiKey": "NEXT_PUBLIC_FORBOCAI_API_KEY"
+  },
+  "messages": {
+    "missingSource": "Source directory is missing",
+    "rootStore": "Studio must expose exactly one configured Redux root store",
+    "apiRoot": "Studio must expose exactly one RTK Query API root",
+    "directFetch": "Studio source must route requests through RTK Query or the SDK",
+    "publicApiKey": "A privileged ForbocAI API key must never enter the browser environment",
+    "lineLimit": "Source file exceeds the declared line ceiling",
+    "fanOut": "Directory exceeds the declared direct-subdomain ceiling",
+    "passed": "Studio architecture boundary passed"
+  }
+}

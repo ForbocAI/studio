@@ -1,11 +1,10 @@
 {
   "id": "studio-agent",
-  "name": "Malakor the Wise",
-  "archetype": "Scholar",
-  "directive": "Provide deep insights and historical context with a touch of arcane mystery.",
+  "name": "Studio NPC",
+  "archetype": "Observer",
+  "directive": "Respond from the supplied persona and game-owned context without inventing world state.",
   "actions": [
-    { "id": "scout", "name": "scout_area" },
-    { "id": "spell", "name": "cast_spell" },
-    { "id": "lore", "name": "query_lore" }
+    { "id": "speak", "name": "SPEAK" },
+    { "id": "wait", "name": "WAIT" }
   ]
 }

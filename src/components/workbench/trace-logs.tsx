@@ -1,54 +1,82 @@
 "use client";
-import { Code2, Terminal, Cpu, Activity } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Badge } from "@/components/ui/badge";
 
-export function TraceLogs() {
-    const logs = [
-        { step: 'DIRECTIVE', status: '200 OK', time: '12ms', payload: '{ "observation": "hello" }' },
-        { step: 'CONTEXT', status: '200 OK', time: '45ms', payload: '{ "recalled": ["mem_1"] }' },
-        { step: 'VERDICT', status: '200 OK', time: '143ms', payload: '{ "valid": true, "action": "SPEAK" }' },
-    ];
+import { Activity, Trash2 } from 'lucide-react';
+import { fromNullable, match } from '@forbocai/core';
+import content from '../../../data/workbench/trace.json';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
+import { ScrollArea } from '@/components/ui/scroll-area';
+import {
+    selectProtocolTraces,
+    tracesCleared,
+} from '@/entities/trace/traceSlice';
+import { useAppDispatch, useAppSelector } from '@/store/hooks';
 
+const formatTimestamp = (timestamp: number): string => new Intl.DateTimeFormat(
+    content.timestampLocale,
+    { dateStyle: 'medium', timeStyle: 'medium' },
+).format(new Date(timestamp));
+
+export const TraceLogs = () => {
+    const dispatch = useAppDispatch();
+    const traces = useAppSelector(selectProtocolTraces);
     return (
-        <div className="flex-1 flex flex-col overflow-hidden bg-black/20 animate-in fade-in duration-500">
-            <header className="p-8 border-b border-border/50 bg-background/50 backdrop-blur-md">
-                <div className="flex items-center justify-between">
-                    <div className="space-y-1">
-                        <h1 className="text-3xl font-serif font-bold text-arcane-purple">Trace Logs</h1>
-                        <p className="text-muted-foreground font-mono text-[10px] uppercase tracking-widest">Real-time Protocol Monitoring</p>
-                    </div>
-                    <div className="flex gap-4">
-                        <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground">
-                            <Activity className="size-3 text-gold" />
-                            <span>API Latency: 42ms</span>
-                        </div>
-                        <div className="flex items-center gap-2 text-[10px] font-mono text-muted-foreground">
-                            <Cpu className="size-3 text-gold" />
-                            <span>Cortex: Online</span>
-                        </div>
-                    </div>
+        <div className="flex flex-1 flex-col overflow-hidden pt-12 md:pt-0">
+            <header className="flex flex-wrap items-start justify-between gap-4 border-b border-border p-6 lg:p-8">
+                <div className="space-y-1">
+                    <h1 className="text-3xl font-serif font-bold text-gold">
+                        {content.heading}
+                    </h1>
+                    <p className="text-sm text-muted-foreground">{content.description}</p>
                 </div>
+                <Button
+                    variant="outline"
+                    size="icon"
+                    onClick={() => dispatch(tracesCleared())}
+                    disabled={traces.length === 0}
+                    aria-label={content.clearLabel}
+                    title={content.clearLabel}
+                >
+                    <Trash2 className="size-4" />
+                </Button>
             </header>
 
-            <ScrollArea className="flex-1 p-0">
-                <div className="divide-y divide-border/20">
-                    {logs.map((log, i) => (
-                        <div key={i} className="p-6 font-mono text-xs hover:bg-white/5 transition-colors">
-                            <div className="flex items-center justify-between mb-4">
-                                <div className="flex items-center gap-3">
-                                    <Badge className="bg-gold/10 text-gold border-gold/20">{log.step}</Badge>
-                                    <span className="text-green-500">{log.status}</span>
-                                </div>
-                                <span className="text-muted-foreground">{log.time}</span>
+            <ScrollArea className="flex-1">
+                {traces.length === 0 && (
+                    <div className="flex items-center gap-3 p-8 text-sm text-muted-foreground">
+                        <Activity className="size-4" />
+                        {content.empty}
+                    </div>
+                )}
+                <div className="divide-y divide-border">
+                    {traces.map((trace) => (
+                        <article key={trace.id} className="grid gap-4 p-6 font-mono text-xs sm:grid-cols-4">
+                            <div>
+                                <p className="mb-1 text-muted-foreground">{content.operationLabel}</p>
+                                <p>{trace.operation}</p>
                             </div>
-                            <div className="bg-black/40 p-4 rounded-lg border border-border/30 overflow-x-auto">
-                                <pre className="text-gold/70">{log.payload}</pre>
+                            <div>
+                                <p className="mb-1 text-muted-foreground">{content.statusLabel}</p>
+                                <Badge variant="outline">{trace.status}</Badge>
                             </div>
-                        </div>
+                            <div>
+                                <p className="mb-1 text-muted-foreground">{content.durationLabel}</p>
+                                <p>
+                                    {match(
+                                        fromNullable(trace.durationMilliseconds),
+                                        (duration) => `${duration}${content.durationUnit}`,
+                                        () => content.pendingDuration,
+                                    )}
+                                </p>
+                            </div>
+                            <div>
+                                <p className="mb-1 text-muted-foreground">{content.startedLabel}</p>
+                                <time>{formatTimestamp(trace.startedAt)}</time>
+                            </div>
+                        </article>
                     ))}
                 </div>
             </ScrollArea>
         </div>
     );
-}
+};

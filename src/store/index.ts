@@ -1,46 +1,66 @@
-import { configureStore, combineReducers, Middleware } from '@reduxjs/toolkit';
-import { persistStore, persistReducer, FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER } from 'redux-persist';
+import {
+    combineReducers,
+    configureStore,
+    type Middleware,
+} from '@reduxjs/toolkit';
+import {
+    FLUSH,
+    PAUSE,
+    PERSIST,
+    PURGE,
+    REGISTER,
+    REHYDRATE,
+    persistReducer,
+    persistStore,
+} from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
-import agentReducer from './slices/agentSlice';
-import uiReducer from './slices/uiSlice';
-import formReducer from './slices/formSlice';
+import { createLogger } from 'redux-logger';
+import uiData from '../../data/workbench/ui.json';
+import agentReducer from '@/entities/agent/agentSlice';
+import chatReducer from '@/entities/chat/chatSlice';
+import traceReducer from '@/entities/trace/traceSlice';
+import uiReducer from '@/entities/ui/uiSlice';
+import { traceListener } from '@/entities/trace/traceListener';
+import {
+    shouldLogReduxDiagnostics,
+    summarizeReduxAction,
+    summarizeReduxState,
+} from '@/entities/trace/reduxDiagnostics';
 import { baseApi } from './api';
-
-import { responsiveListener } from './middleware/responsive';
-import { errorListener } from './middleware/errorListener';
-import logger from 'redux-logger';
 
 const rootReducer = combineReducers({
     agent: agentReducer,
+    chat: chatReducer,
+    trace: traceReducer,
     ui: uiReducer,
-    form: formReducer,
     [baseApi.reducerPath]: baseApi.reducer,
 });
 
-const persistConfig = {
-    key: 'forbocai-studio-root',
-    version: 1,
+const persistedReducer = persistReducer({
+    key: uiData.persistence.key,
+    version: uiData.persistence.version,
     storage,
-    whitelist: ['agent', 'ui'], // Persist agent and UI preferences
-};
+    whitelist: uiData.persistence.slices,
+}, rootReducer);
 
-const persistedReducer = persistReducer(persistConfig, rootReducer);
+const diagnosticLogger = createLogger({
+    collapsed: true,
+    duration: true,
+    timestamp: false,
+    predicate: () => shouldLogReduxDiagnostics(),
+    actionTransformer: summarizeReduxAction,
+    stateTransformer: summarizeReduxState,
+}) as unknown as Middleware;
 
 export const store = configureStore({
-    reducer: persistedReducer as unknown as typeof rootReducer,
-    middleware: (getDefaultMiddleware) => {
-        const middleware = getDefaultMiddleware({
-            serializableCheck: {
-                ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
-            },
-        })
-            .concat(baseApi.middleware)
-            .prepend(responsiveListener.middleware, errorListener.middleware);
-
-        return process.env.NODE_ENV === 'development'
-            ? middleware.concat(logger as Middleware)
-            : middleware;
-    },
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) => getDefaultMiddleware({
+        serializableCheck: {
+            ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+    })
+        .prepend(traceListener.middleware)
+        .concat(baseApi.middleware, diagnosticLogger),
 });
 
 export const persistor = persistStore(store);

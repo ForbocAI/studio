@@ -1,0 +1,13 @@
+{
+  "heading": "Protocol Diagnostics",
+  "description": "Redacted RTK Query lifecycle evidence for Studio-to-SDK operations.",
+  "empty": "Run an NPC observation or inspect memory to create protocol evidence.",
+  "clearLabel": "Clear diagnostics",
+  "operationLabel": "Operation",
+  "statusLabel": "Status",
+  "durationLabel": "Duration",
+  "startedLabel": "Started",
+  "pendingDuration": "in progress",
+  "durationUnit": "ms",
+  "timestampLocale": "en-US"
+}

@@ -1,0 +1,16 @@
+{
+  "heading": "NPC Memory",
+  "description": "Inspect the vector memory executed by the published Node SDK for this NPC.",
+  "searchPlaceholder": "Search stored memory",
+  "loading": "Reading SDK vector memory...",
+  "error": "SDK memory is temporarily unavailable.",
+  "empty": "No memory has been stored for this NPC yet.",
+  "connected": "SDK VECTOR STORE",
+  "identifierLabel": "ID",
+  "importanceLabel": "Importance",
+  "similarityLabel": "Similarity",
+  "timestampLocale": "en-US",
+  "fractionDigits": 2,
+  "importanceMaximum": 1,
+  "percentageMaximum": 100
+}

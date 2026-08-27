@@ -1,0 +1,30 @@
+{
+  "heading": "NPC Architect",
+  "description": "Compose the identity and game-owned action vocabulary sent through the ForbocAI SDK.",
+  "status": "SDK CONTRACT",
+  "identity": {
+    "title": "Identity",
+    "nameLabel": "NPC name",
+    "namePlaceholder": "Name this NPC",
+    "archetypeLabel": "Primary trait",
+    "archetypes": ["Observer", "Diplomat", "Guardian", "Explorer"],
+    "directiveLabel": "Primary goal",
+    "directivePlaceholder": "Define what this NPC seeks to accomplish"
+  },
+  "ownership": {
+    "title": "Runtime ownership",
+    "items": [
+      { "id": "cognition", "label": "Cognition", "value": "API-owned" },
+      { "id": "memory", "label": "Memory", "value": "SDK-owned" },
+      { "id": "world", "label": "World state", "value": "Game-owned" }
+    ]
+  },
+  "actions": {
+    "title": "Available actions",
+    "inputLabel": "New action",
+    "inputPlaceholder": "Action identifier",
+    "addLabel": "Add action",
+    "removeLabel": "Remove action",
+    "empty": "Add the actions this game allows the NPC to select."
+  }
+}

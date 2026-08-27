@@ -1,0 +1,19 @@
+{
+  "exceptions": [
+    {
+      "warning": "No explicit FP-core import detected",
+      "rationale": "Pure presentation, declarations, and framework adapters need no artificial functional-core dependency.",
+      "expiresWhen": "The file acquires domain branching, transformation, validation, or orchestration."
+    },
+    {
+      "warning": "No documented FP primitive usage detected",
+      "rationale": "A file with no functional composition problem does not gain clarity from ceremonial primitive calls.",
+      "expiresWhen": "The file acquires optional, fallible, branching, or compositional domain behavior."
+    }
+  ],
+  "messages": {
+    "missingClassified": "Canonical classified FP checker is unavailable",
+    "unexpectedWarning": "Unreviewed FP warning",
+    "passed": "FP conformance passed with only reviewed non-applicable notices"
+  }
+}

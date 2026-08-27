@@ -1,4 +1,8 @@
-import type { AgentResponse, StructuredPersona } from '@forbocai/core';
+import type {
+    AgentResponse,
+    MemoryItem,
+    StructuredPersona,
+} from '@forbocai/core';
 
 export interface StudioNpcRequest {
     readonly npcId: string;
@@ -8,3 +12,8 @@ export interface StudioNpcRequest {
 }
 
 export type StudioNpcResponse = AgentResponse;
+
+export type StudioMemoryItem = Pick<
+    MemoryItem,
+    'id' | 'text' | 'timestamp' | 'type' | 'importance' | 'similarity'
+>;

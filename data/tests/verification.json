@@ -1,0 +1,49 @@
+{
+  "cases": {
+    "suite": "aggregate release verification",
+    "directFetch": "fails when application source owns a direct request",
+    "secondStore": "fails when application source creates a second root store",
+    "fp": "fails when source introduces a hard FP violation",
+    "lint": "fails when lint fails and still executes later stages",
+    "tests": "fails when tests fail and still executes later stages",
+    "build": "fails when the build fails and still executes later stages"
+  },
+  "architecture": {
+    "fixturePrefix": "studio-verification-",
+    "files": {
+      "package": "package.json",
+      "sourceDirectory": "src",
+      "store": "store.ts",
+      "api": "api.ts",
+      "directFetch": "direct-fetch.ts",
+      "secondStore": "second-store.ts"
+    },
+    "package": "{\"name\":\"verification-fixture\"}",
+    "store": "import { configureStore } from '@reduxjs/toolkit'; export const store = configureStore({ reducer: (state = {}) => state });",
+    "api": "import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query'; export const api = createApi({ reducerPath: 'api', baseQuery: fetchBaseQuery({ baseUrl: '/' }), endpoints: () => ({}) });",
+    "directFetch": "export const request = () => fetch('/fixture');",
+    "secondStore": "import { configureStore } from '@reduxjs/toolkit'; export const secondStore = configureStore({ reducer: (state = {}) => state });"
+  },
+  "fp": {
+    "source": "export class StatefulFixture { value = 1; }",
+    "fileName": "stateful-fixture.ts"
+  },
+  "aggregate": {
+    "runner": "scripts/verification/run-stages.mjs",
+    "architectureGuard": "scripts/verification/check-architecture.mjs",
+    "fpGuard": "scripts/verification/check-fp.mjs",
+    "targetStageId": "target",
+    "sentinelStageId": "sentinel",
+    "sentinelStageLabel": "later stage",
+    "failureCommand": "node",
+    "failureArguments": ["-e", "process.exit(9)"],
+    "sentinelCommand": "node",
+    "sentinelArguments": ["-e", "require('fs').writeFileSync(process.argv[1], 'executed')", "__MARKER__"],
+    "markerToken": "__MARKER__",
+    "markerName": "later-stage-ran.txt",
+    "planName": "verification-plan.json",
+    "encoding": "utf8",
+    "failedStatus": 1,
+    "successfulStatus": 0
+  }
+}

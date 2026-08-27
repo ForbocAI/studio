@@ -6,6 +6,6 @@ export const baseApi = createApi({
     baseQuery: fetchBaseQuery({
         baseUrl: sdkContract.routes.root,
     }),
-    tagTypes: ['Agent'],
+    tagTypes: [sdkContract.cacheTags.memory],
     endpoints: () => ({}),
 });

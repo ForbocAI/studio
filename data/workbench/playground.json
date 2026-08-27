@@ -1,0 +1,27 @@
+{
+  "title": "NPC Playground",
+  "statuses": {
+    "idle": "READY",
+    "pending": "PROCESSING",
+    "fulfilled": "RESPONDED",
+    "rejected": "UNAVAILABLE"
+  },
+  "empty": "Send an observation to exercise this NPC through the published SDK and ForbocAI API.",
+  "inputPlaceholder": "Describe what the NPC observes",
+  "sendLabel": "Send observation",
+  "clearLabel": "Clear transcript",
+  "closeLabel": "Close NPC playground",
+  "thinking": "ForbocAI is processing the observation.",
+  "result": {
+    "actionLabel": "Action",
+    "thoughtLabel": "Thought"
+  },
+  "roles": {
+    "user": "Observation",
+    "assistant": "NPC"
+  },
+  "timing": {
+    "label": "Last SDK round trip",
+    "unit": "ms"
+  }
+}

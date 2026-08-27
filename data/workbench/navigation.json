@@ -1,0 +1,26 @@
+{
+  "brand": {
+    "logo": "/logo.png",
+    "logoAlt": "ForbocAI",
+    "logoWidth": 32,
+    "logoHeight": 32,
+    "name": "FORBOCAI",
+    "product": "Studio"
+  },
+  "groupLabel": "Workbench",
+  "sidebar": {
+    "contextError": "Sidebar controls require SidebarProvider.",
+    "mobileTitle": "Studio navigation",
+    "mobileDescription": "Select a Studio workbench view.",
+    "toggleLabel": "Toggle Studio navigation"
+  },
+  "views": [
+    { "id": "architect", "label": "NPC Architect", "tooltip": "Edit NPC definition", "icon": "architect" },
+    { "id": "brain", "label": "NPC Memory", "tooltip": "Inspect SDK memory", "icon": "brain" },
+    { "id": "trace", "label": "Diagnostics", "tooltip": "Inspect protocol diagnostics", "icon": "trace" }
+  ],
+  "playground": {
+    "showLabel": "Show NPC playground",
+    "hideLabel": "Hide NPC playground"
+  }
+}

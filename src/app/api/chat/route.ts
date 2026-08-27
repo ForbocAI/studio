@@ -2,7 +2,10 @@ import { fromNullable, match } from '@forbocai/core';
 import { NextResponse } from 'next/server';
 import authContract from '../../../../data/contracts/auth.json';
 import sdkContract from '../../../../data/contracts/sdk.json';
-import { parseStudioNpcRequest } from '@/components/sdk/npcRequestAdapters';
+import {
+    isSuccessfulStudioNpcResponse,
+    parseStudioNpcRequest,
+} from '@/components/sdk/npcRequestAdapters';
 import { runStudioNpc } from '@/components/sdk/serverNpcRuntime';
 import { getSessionFromCookies } from '@/lib/auth';
 
@@ -26,12 +29,18 @@ const processingFailure = (error: unknown): NextResponse => {
     );
 };
 
+const renderNpcResult = (result: unknown): NextResponse =>
+    isSuccessfulStudioNpcResponse(result)
+        ? NextResponse.json(result, { status: sdkContract.http.status.ok })
+        : NextResponse.json(
+            { error: sdkContract.messages.invalidResponse },
+            { status: sdkContract.http.status.badGateway },
+        );
+
 const processBody = (value: unknown): Promise<NextResponse> => match(
     fromNullable(parseStudioNpcRequest(value)),
     (request) => runStudioNpc(request)
-        .then((response) => NextResponse.json(response, {
-            status: sdkContract.http.status.ok,
-        }))
+        .then(renderNpcResult)
         .catch(processingFailure),
     () => Promise.resolve(badRequest()),
 );

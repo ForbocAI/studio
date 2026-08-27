@@ -1,0 +1,53 @@
+{
+  "cases": {
+    "suite": "Redux diagnostics redaction",
+    "action": "summarizes lifecycle metadata without payload data",
+    "state": "summarizes entity and request counts without state data",
+    "serialized": "never serializes a credential-shaped fixture",
+    "predicateDisabled": "stays disabled unless explicitly enabled",
+    "predicateEnabled": "enables only through the declared public diagnostic switch"
+  },
+  "secret": "studio-super-secret-fixture",
+  "action": {
+    "type": "api/executeQuery/fulfilled",
+    "payload": {
+      "credential": "studio-super-secret-fixture"
+    },
+    "meta": {
+      "arg": {
+        "endpointName": "runProtocol",
+        "originalArgs": {
+          "apiKey": "studio-super-secret-fixture"
+        }
+      },
+      "requestStatus": "fulfilled"
+    }
+  },
+  "state": {
+    "agent": { "ids": ["agent-fixture"], "entities": { "agent-fixture": { "credential": "studio-super-secret-fixture" } } },
+    "chat": { "ids": ["chat-fixture"], "entities": { "chat-fixture": { "content": "studio-super-secret-fixture" } } },
+    "trace": { "ids": ["trace-fixture"], "entities": { "trace-fixture": { "operation": "runProtocol" } } },
+    "api": {
+      "queries": { "query-fixture": { "data": "studio-super-secret-fixture" } },
+      "mutations": { "mutation-fixture": { "data": "studio-super-secret-fixture" } }
+    }
+  },
+  "expected": {
+    "agentCount": 1,
+    "chatCount": 1,
+    "traceCount": 1,
+    "queryCount": 1,
+    "mutationCount": 1,
+    "summary": {
+      "entityCounts": {
+        "agents": 1,
+        "messages": 1,
+        "traces": 1
+      },
+      "requestCounts": {
+        "queries": 1,
+        "mutations": 1
+      }
+    }
+  }
+}
