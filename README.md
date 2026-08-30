@@ -37,9 +37,10 @@ API cognition with browser logic or teach Servitor a particular game.
 ## Credentials
 
 Sign in through <https://account.forboc.ai>. The browser uses the shared,
-HTTP-only Account session. API credentials remain inside the Studio server and
-stay out of NPC definitions, memory, diagnostics, browser bundles, and source
-control.
+HTTP-only Account session. Account alone issues and clears that session; Studio
+only verifies it before admitting workbench or SDK requests. API credentials
+remain inside the Studio server and stay out of NPC definitions, memory,
+diagnostics, browser bundles, and source control.
 
 ## Integration Guides
 
